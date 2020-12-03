@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MuniciPal</string>
+    <string name="app_name">Smart Citizen</string>
     <string name="language_english">English</string>
     <string name="language_sinhala">සිංහල</string>
     <string name="language_tamil">தமிழ்</string>
@@ -9,7 +9,7 @@
     <string name="register">Register</string>
     <string name="register_activity_name">MuniciPal - Register</string>
     <string name="password">Password</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="phone_number">Phone Number Eg: 0712345678</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>
@@ -21,6 +21,7 @@
     <string name="report_new_issue">Report new issue</string>
     <string name="description">Description</string>
     <string name="report">Report</string>
+    <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
 
     <string-array name="languages">
         <item>Select Language</item>
