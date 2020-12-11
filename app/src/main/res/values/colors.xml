@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#801919</color>
+    <color name="disabled_button">#7A7979</color>
 </resources>

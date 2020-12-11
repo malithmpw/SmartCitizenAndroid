@@ -22,16 +22,12 @@ import cmb.reporter.smartcitizen.R
 import cmb.reporter.smartcitizen.models.Area
 import cmb.reporter.smartcitizen.models.Category
 import cmb.reporter.smartcitizen.models.User
-import cmb.reporter.smartcitizen.retrofit.ServiceBuilder
-import cmb.reporter.smartcitizen.retrofit.SmartCityEndpoints
-import cmb.reporter.smartcitizen.sharedPref.USER_ROLE
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
 class LandingActivity : BaseActivity() {
-    private val request = ServiceBuilder.buildService(SmartCityEndpoints::class.java)
     private var userRole: String? = null
     private val PERMISSION_CODE = 1000;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,7 +185,7 @@ class LandingActivity : BaseActivity() {
 
 
     private fun initAppData(){
-        val areaRequest = request.getAreas()
+        val areaRequest = apiService.getAreas()
         areaRequest.enqueue(object : Callback<List<Area>> {
             override fun onResponse(call: Call<List<Area>>, response: Response<List<Area>>) {
                 if (response.isSuccessful) {
@@ -205,7 +201,7 @@ class LandingActivity : BaseActivity() {
             }
         })
 
-        val categoryRequest = request.getCategories()
+        val categoryRequest = apiService.getCategories()
         categoryRequest.enqueue(object : Callback<List<Category>> {
             override fun onResponse(call: Call<List<Category>>, response: Response<List<Category>>) {
                 if (response.isSuccessful) {

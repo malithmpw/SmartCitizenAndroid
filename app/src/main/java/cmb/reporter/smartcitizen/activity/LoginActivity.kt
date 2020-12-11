@@ -5,13 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import cmb.reporter.smartcitizen.AppData
 import cmb.reporter.smartcitizen.R
-import cmb.reporter.smartcitizen.models.Area
-import cmb.reporter.smartcitizen.models.LoginRequestDTO
+import cmb.reporter.smartcitizen.models.LoginRequest
 import cmb.reporter.smartcitizen.models.LoginResponse
-import cmb.reporter.smartcitizen.retrofit.ServiceBuilder
-import cmb.reporter.smartcitizen.retrofit.SmartCityEndpoints
 import cmb.reporter.smartcitizen.sharedPref.EN
 import cmb.reporter.smartcitizen.sharedPref.LANGUAGE
 import cmb.reporter.smartcitizen.sharedPref.SI
@@ -23,7 +19,6 @@ import retrofit2.Response
 class LoginActivity : BaseActivity() {
     private lateinit  var userIdEt: EditText
     private lateinit  var passwordEt: EditText
-    private val request = ServiceBuilder.buildService(SmartCityEndpoints::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
@@ -81,7 +76,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun loginUser(context: Context, userId: String, password: String) {
-        val call = request.login(LoginRequestDTO(userId, password))
+        val call = apiService.login(LoginRequest(userId, password))
 
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {

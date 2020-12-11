@@ -49,8 +49,8 @@ class UserIssueAdapter(val context: Context, val list: List<IssueResponse>) :
             val date = itemView.findViewById(R.id.row_date_textView) as TextView
             val status = itemView.findViewById(R.id.row_status_textView) as TextView
 
-            image.setImageViaGlide(context, issue.imageUrl)
-            area.text = issue.area
+            image.setImageViaGlide(context, issue.imageUrl[0])
+            area.text = issue.area?.name
             description.text = issue.description
             date.text = issue.createdDate
             status.text = issue.status

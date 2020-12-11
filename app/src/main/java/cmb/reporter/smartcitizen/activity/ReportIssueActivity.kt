@@ -20,8 +20,12 @@ import androidx.core.app.ActivityCompat
 import cmb.reporter.smartcitizen.AppData
 import cmb.reporter.smartcitizen.BuildConfig
 import cmb.reporter.smartcitizen.R
+import cmb.reporter.smartcitizen.models.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -29,23 +33,16 @@ import java.io.InputStream
 open class ReportIssueActivity : BaseActivity() {
     private val PERMISSION_CODE = 1000;
     private val IMAGE_CAPTURE_CODE = 1001
-    var image_uri: Uri? = null
-    var issueImage: ImageView? = null
-    var encodedImage: String? = null
-    var areaSpinner: Spinner? = null
-    var categorySpinner: Spinner? = null
-
-    /**
-     * Provides the entry point to the Fused Location Provider API.
-     */
+    private var imageUri: Uri? = null
+    private var issueImage: ImageView? = null
+    private var encodedImage: String? = null
+    private var areaSpinner: Spinner? = null
+    private var categorySpinner: Spinner? = null
+    private var latitude: Double? = null
+    private var longitude: Double? = null
     private var mFusedLocationClient: FusedLocationProviderClient? = null
-
-    /**
-     * Represents a geographical location.
-     */
     private var mLastLocation: Location? = null
-
-    private var description: TextView? = null
+    private var descriptionTv: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +54,102 @@ open class ReportIssueActivity : BaseActivity() {
         retakeImageView.setOnClickListener {
             openCameraToTakeAPicture()
         }
-        description = findViewById(R.id.textView_report_issue_description)
+        descriptionTv = findViewById(R.id.textView_report_issue_description)
         openCameraToTakeAPicture()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val reportIssueButton = findViewById<Button>(R.id.button_report_issue)
+        reportIssueButton.setOnClickListener {
+            val area =
+                getArea((if (areaSpinner == null) 0 else areaSpinner!!.selectedItemId).toInt())
+
+            val category =
+                getCategory((if (categorySpinner == null) 0 else categorySpinner!!.selectedItemId).toInt())
+
+            val description = descriptionTv?.text.toString()
+
+            val status = IssueStatus.OPEN.name
+
+            if (encodedImage.isNullOrEmpty()){
+                Toast.makeText(
+                    this@ReportIssueActivity,
+                    "Attach an Image",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+
+            if (latitude != null && longitude != null) {
+                val issue = Issue(
+                    user = sharePrefUtil.getUser(),
+                    category = category,
+                    area = area,
+                    imageToSave = listOf(encodedImage!!),
+                    description = description,
+                    lat = latitude!!,
+                    lon = longitude!!,
+                    status = status
+                )
+                val call = apiService.addIssue(
+                    issue = issue
+                )
+                call.enqueue(object : Callback<IssueResponse> {
+                    override fun onResponse(
+                        call: Call<IssueResponse>,
+                        response: Response<IssueResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            reportIssueButton.isEnabled = false
+                            reportIssueButton.background =
+                                resources.getDrawable(R.drawable.rounded_button_disabled)
+                            Toast.makeText(
+                                this@ReportIssueActivity,
+                                "Successfully Reported the issue!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                this@ReportIssueActivity,
+                                "Error Occurred, Try again",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<IssueResponse>, t: Throwable) {
+                        Toast.makeText(
+                            this@ReportIssueActivity,
+                            "Error Occurred, Try again Later",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+
+            } else {
+                Toast.makeText(
+                    this@ReportIssueActivity,
+                    "Location data not found",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        }
+    }
+
+    private fun getArea(areaId: Int): Area? {
+        return if (areaId == 0) {
+            null
+        } else {
+            AppData.getAreas()[areaId]
+        }
+    }
+
+    private fun getCategory(categoryId: Int): Category? {
+        return if (categoryId == 0) {
+            null
+        } else {
+            AppData.getCategory()[categoryId]
+        }
     }
 
     private fun initSpinners() {
@@ -111,10 +201,10 @@ open class ReportIssueActivity : BaseActivity() {
 
     private fun openCamera() {
         val values = ContentValues()
-        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         //camera intent
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
         startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
     }
 
@@ -122,14 +212,14 @@ open class ReportIssueActivity : BaseActivity() {
         //called when image was captured from camera intent
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view
-            issueImage?.setImageURI(image_uri)
-            image_uri?.let {
+            issueImage?.setImageURI(imageUri)
+            imageUri?.let {
                 val imageStream: InputStream? = contentResolver.openInputStream(it)
                 val selectedImage = BitmapFactory.decodeStream(imageStream)
                 encodedImage = encodeImage(selectedImage)
-                initSpinners()
             }
         }
+        initSpinners()
     }
 
     @SuppressLint("MissingPermission")
@@ -139,10 +229,8 @@ open class ReportIssueActivity : BaseActivity() {
                 if (task.isSuccessful && task.result != null) {
                     mLastLocation = task.result
                     mLastLocation?.let {
-                        val lat = it.latitude
-                        val lon = it.longitude
-
-                        description?.text = "Lat : $lat, Lon :$lon"
+                        latitude = it.latitude
+                        longitude = it.longitude
                     }
 
                 } else {

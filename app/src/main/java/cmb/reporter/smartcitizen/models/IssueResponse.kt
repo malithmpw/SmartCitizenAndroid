@@ -3,17 +3,17 @@ package cmb.reporter.smartcitizen.models
 import java.io.Serializable
 
 data class IssueResponse(
-    val issueId: String,
-    val userId: String,
-    val category: String = "Any",
+    val id: Int,
     val description: String?,
-    val imageUrl: String,
-    val area: String = "Any",
+    val imageUrl: List<String>,
     val status: String,
-    val assigneeId: String?,
-    val assigneeName: String?,
+    val lat: Double,
+    val lon: Double,
     val createdDate: String,
     val updatedDate: String,
-    val latitude: Double,
-    val longitude: Double
-) : Serializable
+    val category: Category?,
+    val area: Area?,
+    val user: User,
+    val assignee: String?,
+    val assignBy: String?
+): Serializable

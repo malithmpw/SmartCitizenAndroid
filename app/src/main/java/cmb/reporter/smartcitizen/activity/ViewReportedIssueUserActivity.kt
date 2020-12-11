@@ -5,7 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cmb.reporter.smartcitizen.R
 import cmb.reporter.smartcitizen.adapter.UserIssueAdapter
+import cmb.reporter.smartcitizen.models.Area
+import cmb.reporter.smartcitizen.models.Category
 import cmb.reporter.smartcitizen.models.IssueResponse
+import cmb.reporter.smartcitizen.models.User
 
 class ViewReportedIssueUserActivity : BaseActivity() {
     var adapter : UserIssueAdapter? = null
@@ -24,18 +27,17 @@ class ViewReportedIssueUserActivity : BaseActivity() {
         val list = mutableListOf<IssueResponse>()
         for (i in 1..20) {
             val issue = IssueResponse(
-                issueId = "123$i",
-                userId = "0714859905",
-                category = getCategory(i),
+                id = i,
+                category = Category(1, getCategory(i),""),
                 description = "Bulb is not working",
-                imageUrl = getImageUrl(i),
-                area = getArea(i),
+                imageUrl = listOf(getImageUrl(i)),
+                area = Area(1,getArea(i)),
                 status = "OPEN",
                 createdDate = "2020-12-$i",
                 updatedDate = "2020-12-23",
-                latitude = 6.992776,
-                longitude = 80.171158, assigneeId = null, assigneeName = null
-            )
+                user = sharePrefUtil.getUser(),
+                lat = 6.992776,
+                lon = 80.171158, assignee = null, assignBy = null)
             list.add(issue)
         }
 

@@ -25,15 +25,20 @@ class IssueDetailsActivity : BaseActivity() {
             val issueAddressTo = findViewById<TextView>(R.id.textView_address_to_value)
             val issueDesc = findViewById<TextView>(R.id.textView_issue_desc_value)
 
-            imageViewIssue.setImageViaGlide(this, issue.imageUrl)
+            if (issue.imageUrl.isNotEmpty()) {
+                imageViewIssue.setImageViaGlide(this, issue.imageUrl[0])
+            }
             imageViewOpenMaps.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/@${issue.latitude},${issue.longitude},10z"))
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.google.com/maps/@${issue.lat},${issue.lon},10z")
+                )
                 startActivity(intent)
             }
-            issueId.text = issue.issueId
+            issueId.text = issue.id.toString()
             issueStatus.text = issue.status
-            issueArea.text = if (issue.area == "Any") "Not Assigned" else issue.area
-            issueAddressTo.text = if (issue.category == "Any") "Not Assigned" else issue.category
+            issueArea.text = if (issue.area?.name == "Any") "Not Assigned" else issue.area?.name
+            issueAddressTo.text = if (issue.category?.name == "Any") "Not Assigned" else issue.category?.name
             issueDesc.text = issue.description
         }
     }
