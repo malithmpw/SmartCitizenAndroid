@@ -6,27 +6,34 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.util.Base64
+import android.widget.*
 import androidx.core.app.ActivityCompat
+import cmb.reporter.smartcitizen.AppData
 import cmb.reporter.smartcitizen.BuildConfig
 import cmb.reporter.smartcitizen.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
-open class ReportIssueActivity :BaseActivity() {
+
+open class ReportIssueActivity : BaseActivity() {
     private val PERMISSION_CODE = 1000;
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
     var issueImage: ImageView? = null
+    var encodedImage: String? = null
+    var areaSpinner: Spinner? = null
+    var categorySpinner: Spinner? = null
 
     /**
      * Provides the entry point to the Fused Location Provider API.
@@ -44,13 +51,29 @@ open class ReportIssueActivity :BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.report_new_issue_layout)
         issueImage = findViewById(R.id.imageView_issue_image)
+        areaSpinner = findViewById(R.id.spinner_area)
+        categorySpinner = findViewById(R.id.spinner_department)
         val retakeImageView = findViewById<ImageButton>(R.id.imageButton_retake)
         retakeImageView.setOnClickListener {
             openCameraToTakeAPicture()
         }
-        description = findViewById<TextView>(R.id.textView_report_issue_description)
+        description = findViewById(R.id.textView_report_issue_description)
         openCameraToTakeAPicture()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private fun initSpinners() {
+        val areaAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_item, AppData.getAreas().map { it.name })
+        areaSpinner?.let {
+            it.adapter = areaAdapter
+        }
+
+        val categoryAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_item, AppData.getCategory().map { it.name })
+        categorySpinner?.let {
+            it.adapter = categoryAdapter
+        }
     }
 
     public override fun onStart() {
@@ -100,6 +123,12 @@ open class ReportIssueActivity :BaseActivity() {
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view
             issueImage?.setImageURI(image_uri)
+            image_uri?.let {
+                val imageStream: InputStream? = contentResolver.openInputStream(it)
+                val selectedImage = BitmapFactory.decodeStream(imageStream)
+                encodedImage = encodeImage(selectedImage)
+                initSpinners()
+            }
         }
     }
 
@@ -178,5 +207,12 @@ open class ReportIssueActivity :BaseActivity() {
 
     companion object {
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+    }
+
+    private fun encodeImage(bm: Bitmap): String? {
+        val baos = ByteArrayOutputStream()
+        bm.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+        val b = baos.toByteArray()
+        return Base64.encodeToString(b, Base64.DEFAULT)
     }
 }

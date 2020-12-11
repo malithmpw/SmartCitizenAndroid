@@ -1,32 +1,51 @@
 package cmb.reporter.smartcitizen.activity
 
 import android.Manifest
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import cmb.reporter.smartcitizen.AppData
 import cmb.reporter.smartcitizen.BuildConfig
 import cmb.reporter.smartcitizen.R
+import cmb.reporter.smartcitizen.models.Area
+import cmb.reporter.smartcitizen.models.Category
+import cmb.reporter.smartcitizen.models.User
+import cmb.reporter.smartcitizen.retrofit.ServiceBuilder
+import cmb.reporter.smartcitizen.retrofit.SmartCityEndpoints
 import cmb.reporter.smartcitizen.sharedPref.USER_ROLE
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class LandingActivity : BaseActivity() {
-    var userRole: String? = null
+    private val request = ServiceBuilder.buildService(SmartCityEndpoints::class.java)
+    private var userRole: String? = null
     private val PERMISSION_CODE = 1000;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.landing_activity)
+        val welcomeUserName = findViewById<TextView>(R.id.textView_landing_welcone_username)
         val welcomeDescription = findViewById<TextView>(R.id.textView_landing_welcone_description)
         val viewIssueButton = findViewById<Button>(R.id.button_landing_view_issues_reported)
         val reportNewOrAssignedIssueButton =
             findViewById<Button>(R.id.button_landing_view_issues_assigned_to_me_or_report)
 
-        userRole = sharePrefUtil.getStringValue(USER_ROLE)
-        userRole = "USER"
+        val user: User = sharePrefUtil.getUser()
+        userRole = user.role.name
+        welcomeUserName.text = "Welcome ${user.firstName}"
         if (userRole == "USER") {
             welcomeDescription.text = resources.getString(R.string.landing_page_message_user)
             viewIssueButton.text = resources.getString(R.string.my_reported_issues)
@@ -56,6 +75,11 @@ class LandingActivity : BaseActivity() {
             startActivity(Intent(this, ReportIssueActivity::class.java))
         } else if (userRole == "ADMIN") {
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initAppData()
     }
 
 
@@ -123,5 +147,78 @@ class LandingActivity : BaseActivity() {
             }
         }
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            R.id.action_account -> {
+                showDialog(this)
+            }
+            else -> {
+            }
+        }
+        return true
+    }
+
+    private fun showDialog(context: Context) {
+        val dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.user_account_layout)
+        dialog.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        val user = sharePrefUtil.getUser()
+        val name = dialog.findViewById(R.id.textView_account_name) as TextView
+        val role = dialog.findViewById(R.id.textView_account_role) as TextView
+        name.text = "${user.firstName} ${user.lastName}"
+        role.text = "${user.role.name}"
+        val ok = dialog.findViewById(R.id.button_account_ok) as Button
+        ok.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+
+    private fun initAppData(){
+        val areaRequest = request.getAreas()
+        areaRequest.enqueue(object : Callback<List<Area>> {
+            override fun onResponse(call: Call<List<Area>>, response: Response<List<Area>>) {
+                if (response.isSuccessful) {
+                    val areas = response.body()
+                    areas?.let {
+                        val areas = it.toMutableList()
+                        areas.add(0,  Area(-1,"Select Area"))
+                        AppData.setAreas(areas)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<Area>>, t: Throwable) {
+            }
+        })
+
+        val categoryRequest = request.getCategories()
+        categoryRequest.enqueue(object : Callback<List<Category>> {
+            override fun onResponse(call: Call<List<Category>>, response: Response<List<Category>>) {
+                if (response.isSuccessful) {
+                    val categories = response.body()
+                    categories?.let {
+                        val categories = it.toMutableList()
+                        categories.add(0,  Category(-1,"Select Department", ""))
+                        AppData.setCategories(categories)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<Category>>, t: Throwable) {
+            }
+        })
     }
 }

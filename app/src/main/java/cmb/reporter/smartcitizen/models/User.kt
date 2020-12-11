@@ -1,9 +1,10 @@
 package cmb.reporter.smartcitizen.models
 
 data class User(
+    val id: Int,
     val firstName: String,
     val lastName: String,
-    val userId: String,
+    val phoneNo: String,
     val password: String?,
-    val role: String
+    val role: Role
 )

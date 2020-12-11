@@ -7,6 +7,9 @@ import android.content.res.Resources
 import android.os.Build
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
+import cmb.reporter.smartcitizen.models.LoginResponse
+import cmb.reporter.smartcitizen.models.User
+import com.google.gson.Gson
 import java.util.*
 
 class SharePrefUtil(context: Context) {
@@ -24,6 +27,12 @@ class SharePrefUtil(context: Context) {
         editor.commit()
     }
 
+    fun putIntValue(key: String, value: Int) {
+        val editor = sharedPreferences.edit()
+        editor.putInt(key, value)
+        editor.commit()
+    }
+
     fun setApplicationLocale(context: Context, locale: String) {
         val resources: Resources = context.resources
         val dm: DisplayMetrics = resources.displayMetrics
@@ -35,9 +44,21 @@ class SharePrefUtil(context: Context) {
         }
         resources.updateConfiguration(config, dm)
     }
+
+    fun saveUser(loginResponse: LoginResponse) {
+        val userJson = Gson().toJson(loginResponse)
+        putStringValue(USER, userJson)
+        putStringValue(USER_ROLE, loginResponse.role.name)
+    }
+
+    fun getUser(): User{
+        val userJson = getStringValue(USER)
+        return Gson().fromJson(userJson, User::class.java)
+    }
 }
 
 const val USER_ROLE = "user_role"
+const val USER = "user"
 const val LANGUAGE = "language"
 const val SI = "si"
 const val TA = "ta"
