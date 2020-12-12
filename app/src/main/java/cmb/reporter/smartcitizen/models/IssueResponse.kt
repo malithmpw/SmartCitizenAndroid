@@ -2,7 +2,8 @@ package cmb.reporter.smartcitizen.models
 
 import java.io.Serializable
 
-data class IssueResponse(
+data class
+IssueResponse(
     val id: Int,
     val description: String?,
     val imageUrl: List<String>,

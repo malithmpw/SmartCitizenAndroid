@@ -51,15 +51,21 @@ open class ReportIssueActivity : BaseActivity() {
         areaSpinner = findViewById(R.id.spinner_area)
         categorySpinner = findViewById(R.id.spinner_department)
         val retakeImageView = findViewById<ImageButton>(R.id.imageButton_retake)
+        val reportIssueButton = findViewById<Button>(R.id.button_report_issue)
         retakeImageView.setOnClickListener {
             openCameraToTakeAPicture()
+            reportIssueButton.isEnabled = true
+            reportIssueButton.background =
+                resources.getDrawable(R.drawable.rounded_button)
         }
         descriptionTv = findViewById(R.id.textView_report_issue_description)
         openCameraToTakeAPicture()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        val reportIssueButton = findViewById<Button>(R.id.button_report_issue)
         reportIssueButton.setOnClickListener {
+            reportIssueButton.isEnabled = false
+            reportIssueButton.background =
+                resources.getDrawable(R.drawable.rounded_button_disabled)
             val area =
                 getArea((if (areaSpinner == null) 0 else areaSpinner!!.selectedItemId).toInt())
 
@@ -70,7 +76,7 @@ open class ReportIssueActivity : BaseActivity() {
 
             val status = IssueStatus.OPEN.name
 
-            if (encodedImage.isNullOrEmpty()){
+            if (encodedImage.isNullOrEmpty()) {
                 Toast.makeText(
                     this@ReportIssueActivity,
                     "Attach an Image",
@@ -99,15 +105,15 @@ open class ReportIssueActivity : BaseActivity() {
                         response: Response<IssueResponse>
                     ) {
                         if (response.isSuccessful) {
-                            reportIssueButton.isEnabled = false
-                            reportIssueButton.background =
-                                resources.getDrawable(R.drawable.rounded_button_disabled)
                             Toast.makeText(
                                 this@ReportIssueActivity,
                                 "Successfully Reported the issue!",
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
+                            reportIssueButton.isEnabled = true
+                            reportIssueButton.background =
+                                resources.getDrawable(R.drawable.rounded_button)
                             Toast.makeText(
                                 this@ReportIssueActivity,
                                 "Error Occurred, Try again",
@@ -117,6 +123,9 @@ open class ReportIssueActivity : BaseActivity() {
                     }
 
                     override fun onFailure(call: Call<IssueResponse>, t: Throwable) {
+                        reportIssueButton.isEnabled = true
+                        reportIssueButton.background =
+                            resources.getDrawable(R.drawable.rounded_button)
                         Toast.makeText(
                             this@ReportIssueActivity,
                             "Error Occurred, Try again Later",
@@ -215,8 +224,9 @@ open class ReportIssueActivity : BaseActivity() {
             issueImage?.setImageURI(imageUri)
             imageUri?.let {
                 val imageStream: InputStream? = contentResolver.openInputStream(it)
-                val selectedImage = BitmapFactory.decodeStream(imageStream)
-                encodedImage = encodeImage(selectedImage)
+                imageStream?.let {
+                    encodedImage = encodeToBase64(imageStream)
+                }
             }
         }
         initSpinners()
@@ -279,7 +289,6 @@ open class ReportIssueActivity : BaseActivity() {
                 getLastLocation()
             } else {
 
-                // Build intent that displays the App settings screen.
                 val intent = Intent()
                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                 val uri = Uri.fromParts(
@@ -297,10 +306,11 @@ open class ReportIssueActivity : BaseActivity() {
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     }
 
-    private fun encodeImage(bm: Bitmap): String? {
-        val baos = ByteArrayOutputStream()
-        bm.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-        val b = baos.toByteArray()
-        return Base64.encodeToString(b, Base64.DEFAULT)
+    private fun encodeToBase64(inputStream: InputStream): String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream)
+        val imageBytes: ByteArray = byteArrayOutputStream.toByteArray()
+        return "data:image/png;base64,${Base64.encodeToString(imageBytes, Base64.DEFAULT)}"
     }
 }

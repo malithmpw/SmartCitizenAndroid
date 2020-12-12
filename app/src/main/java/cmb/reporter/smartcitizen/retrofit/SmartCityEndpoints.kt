@@ -19,4 +19,7 @@ interface SmartCityEndpoints {
     @POST("issue/add")
     fun addIssue(@Body issue: Issue): Call<IssueResponse>
 
+    @POST("issue/all")
+    fun getIssues(@Body issueRequest: IssueRequest): Call<AllIssueResponse>
+
 }

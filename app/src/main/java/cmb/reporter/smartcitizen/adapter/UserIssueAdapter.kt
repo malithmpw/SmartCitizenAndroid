@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import cmb.reporter.smartcitizen.AppData
 import cmb.reporter.smartcitizen.R
 import cmb.reporter.smartcitizen.activity.IssueDetailsActivity
 import cmb.reporter.smartcitizen.models.IssueResponse
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import java.lang.Appendable
 
 
 class UserIssueAdapter(val context: Context, val list: List<IssueResponse>) :
@@ -31,8 +33,8 @@ class UserIssueAdapter(val context: Context, val list: List<IssueResponse>) :
         val issue = list[position]
         holder.bindItems(context, issue)
         holder.itemView.setOnClickListener {
+            AppData.setSelectedIssue(issue)
             val intent = Intent(context, IssueDetailsActivity::class.java)
-            intent.putExtra("issue", issue)
             context.startActivity(intent)
         }
     }
@@ -49,7 +51,7 @@ class UserIssueAdapter(val context: Context, val list: List<IssueResponse>) :
             val date = itemView.findViewById(R.id.row_date_textView) as TextView
             val status = itemView.findViewById(R.id.row_status_textView) as TextView
 
-            image.setImageViaGlide(context, issue.imageUrl[0])
+            image.setImageViaGlide(context, "http://95.111.198.176:9001${issue.imageUrl[0]}")
             area.text = issue.area?.name
             description.text = issue.description
             date.text = issue.createdDate
