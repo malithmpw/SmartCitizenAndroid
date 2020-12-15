@@ -17,10 +17,10 @@ import com.bumptech.glide.request.RequestOptions
 import java.lang.Appendable
 
 
-class UserIssueAdapter(val context: Context, val list: List<IssueResponse>) :
+class UserIssueAdapter(val context: Context) :
     RecyclerView.Adapter<UserIssueAdapter.ViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserIssueAdapter.ViewHolder {
+    private var list: MutableList<IssueResponse> = mutableListOf()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(
             R.layout.issue_row_user_layout,
             parent,
@@ -37,6 +37,15 @@ class UserIssueAdapter(val context: Context, val list: List<IssueResponse>) :
             val intent = Intent(context, IssueDetailsActivity::class.java)
             context.startActivity(intent)
         }
+    }
+
+    fun updateData(data: List<IssueResponse>){
+        list.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun clearData(){
+        list = mutableListOf()
     }
 
     override fun getItemCount(): Int {

@@ -19,6 +19,10 @@ class RegisterActivity : BaseActivity() {
     private val RESOLVE_HINT = 1332
     private var isPhoneNumberVerified = false
     private var etPhoneNumber: EditText? = null
+    private var firstName: EditText? = null
+    private var lastName: EditText? = null
+    private var password: EditText? = null
+    private var confirmPassword: EditText? = null
     private var client: SmsRetrieverClient? = null
     private var apiClient: GoogleApiClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,15 +31,22 @@ class RegisterActivity : BaseActivity() {
         initClients()
         requestHint()
         setTitle(R.string.register_activity_name)
+
         etPhoneNumber = findViewById(R.id.editText_userPhoneNumber)
+        firstName = findViewById(R.id.editText_firstName)
+        lastName = findViewById(R.id.editText_lastName)
+        password = findViewById(R.id.editText_password)
+        confirmPassword = findViewById(R.id.editText_password_confirm)
+
         val buttonRegister = findViewById<Button>(R.id.button_register)
         buttonRegister.setOnClickListener {
             if (isPhoneNumberVerified) {
-                finish()
-                startActivity(Intent(this, LandingActivity::class.java))
+
             }
         }
     }
+
+
 
     private fun initClients() {
         client = SmsRetriever.getClient(this)
@@ -80,22 +91,10 @@ class RegisterActivity : BaseActivity() {
                 if (!verifiedNumber.isNullOrEmpty()){
                     etPhoneNumber?.setText(verifiedNumber)
                     etPhoneNumber?.isEnabled = false
+                    isPhoneNumberVerified = true
                 }else{
 
                 }
-                /*etPhoneNumber?.text?.toString()?.let {
-                    val enteredPhoneNumber = it
-                    if ("+94${
-                            enteredPhoneNumber.substring(
-                                1,
-                                enteredPhoneNumber.length
-                            )
-                        }" == verifiedNumber
-                    ) {
-                        isPhoneNumberVerified = true
-                        etPhoneNumber?.setText(verifiedNumber)
-                    }
-                }*/
             }
         }
     }

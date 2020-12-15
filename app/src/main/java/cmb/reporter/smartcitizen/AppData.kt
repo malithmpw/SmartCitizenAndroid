@@ -21,7 +21,23 @@ object AppData {
     }
 
     fun getSelectedIssue() = selectedIssue
-    fun setSelectedIssue(issueResponse: IssueResponse){
+    fun setSelectedIssue(issueResponse: IssueResponse) {
         selectedIssue = issueResponse
+    }
+}
+
+fun getArea(areaId: Int): Area? {
+    return if (areaId == 0) {
+        null
+    } else {
+        AppData.getAreas()[areaId]
+    }
+}
+
+fun getCategory(categoryId: Int): Category? {
+    return if (categoryId == 0) {
+        null
+    } else {
+        AppData.getCategory()[categoryId]
     }
 }

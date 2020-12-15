@@ -17,9 +17,8 @@ import android.provider.Settings
 import android.util.Base64
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import cmb.reporter.smartcitizen.AppData
-import cmb.reporter.smartcitizen.BuildConfig
-import cmb.reporter.smartcitizen.R
+import cmb.reporter.smartcitizen.*
+import cmb.reporter.smartcitizen.adapter.SmartCitizenSpinnerAdapter
 import cmb.reporter.smartcitizen.models.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -145,31 +144,16 @@ open class ReportIssueActivity : BaseActivity() {
         }
     }
 
-    private fun getArea(areaId: Int): Area? {
-        return if (areaId == 0) {
-            null
-        } else {
-            AppData.getAreas()[areaId]
-        }
-    }
 
-    private fun getCategory(categoryId: Int): Category? {
-        return if (categoryId == 0) {
-            null
-        } else {
-            AppData.getCategory()[categoryId]
-        }
-    }
 
     private fun initSpinners() {
-        val areaAdapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, AppData.getAreas().map { it.name })
+        val areaAdapter = SmartCitizenSpinnerAdapter(this, AppData.getAreas().map { it.name })
         areaSpinner?.let {
             it.adapter = areaAdapter
         }
 
-        val categoryAdapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, AppData.getCategory().map { it.name })
+        val categoryAdapter =
+            SmartCitizenSpinnerAdapter(this, AppData.getCategory().map { it.name })
         categorySpinner?.let {
             it.adapter = categoryAdapter
         }
@@ -309,7 +293,12 @@ open class ReportIssueActivity : BaseActivity() {
     private fun encodeToBase64(inputStream: InputStream): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val bitmap = BitmapFactory.decodeStream(inputStream)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream)
+        val width = bitmap.width
+        val height = bitmap.height
+        val newWidth = 1000
+        val newHeight = height*newWidth/width
+        val resized = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+        resized.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val imageBytes: ByteArray = byteArrayOutputStream.toByteArray()
         return "data:image/png;base64,${Base64.encodeToString(imageBytes, Base64.DEFAULT)}"
     }

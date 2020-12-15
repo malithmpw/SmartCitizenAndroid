@@ -23,6 +23,12 @@
     <string name="report">Report</string>
     <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
     <string name="user_name_or_password_incorrect">Phone Number or Password Incorrect!</string>
+    <string name="filter">Filter</string>
+    <string name="ok">OK</string>
+    <string name="start_date">Start Date:</string>
+    <string name="end_date">End Date:</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
 
     <string-array name="languages">
         <item>Select Language</item>
