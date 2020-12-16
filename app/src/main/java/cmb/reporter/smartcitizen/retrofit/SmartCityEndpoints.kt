@@ -10,6 +10,9 @@ interface SmartCityEndpoints {
     @POST("user/login")
     fun login(@Body login: LoginRequest): Call<LoginResponse>
 
+    @POST("user/register")
+    fun register(@Body register: RegisterUser): Call<RegisterUser>
+
     @GET("area/all")
     fun getAreas(): Call<List<Area>>
 
