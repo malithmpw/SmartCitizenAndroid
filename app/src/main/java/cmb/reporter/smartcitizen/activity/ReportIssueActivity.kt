@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Base64
+import android.view.View
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import cmb.reporter.smartcitizen.*
@@ -30,7 +31,7 @@ import java.io.InputStream
 
 
 open class ReportIssueActivity : BaseActivity() {
-    private val PERMISSION_CODE = 1000;
+    private val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
     private var imageUri: Uri? = null
     private var issueImage: ImageView? = null
@@ -42,6 +43,7 @@ open class ReportIssueActivity : BaseActivity() {
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private var mLastLocation: Location? = null
     private var descriptionTv: TextView? = null
+    private lateinit var progressbar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +51,8 @@ open class ReportIssueActivity : BaseActivity() {
         issueImage = findViewById(R.id.imageView_issue_image)
         areaSpinner = findViewById(R.id.spinner_area)
         categorySpinner = findViewById(R.id.spinner_department)
+        progressbar = findViewById(R.id.progressBar)
+
         val retakeImageView = findViewById<ImageButton>(R.id.imageButton_retake)
         val reportIssueButton = findViewById<Button>(R.id.button_report_issue)
         retakeImageView.setOnClickListener {
@@ -66,10 +70,10 @@ open class ReportIssueActivity : BaseActivity() {
             reportIssueButton.background =
                 resources.getDrawable(R.drawable.rounded_button_disabled)
             val area =
-                getArea((if (areaSpinner == null) 0 else areaSpinner!!.selectedItemId).toInt())
+                getArea(areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String))
 
             val category =
-                getCategory((if (categorySpinner == null) 0 else categorySpinner!!.selectedItemId).toInt())
+                getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String))
 
             val description = descriptionTv?.text.toString()
 
@@ -85,6 +89,7 @@ open class ReportIssueActivity : BaseActivity() {
             }
 
             if (latitude != null && longitude != null) {
+                progressbar.visibility = View.VISIBLE
                 val issue = Issue(
                     user = sharePrefUtil.getUser(),
                     category = category,
@@ -106,10 +111,12 @@ open class ReportIssueActivity : BaseActivity() {
                         if (response.isSuccessful) {
                             Toast.makeText(
                                 this@ReportIssueActivity,
-                                "Successfully Reported the issue!",
+                                "Reporting is Successful",
                                 Toast.LENGTH_LONG
                             ).show()
+                            onBackPressed()
                         } else {
+                            progressbar.visibility = View.GONE
                             reportIssueButton.isEnabled = true
                             reportIssueButton.background =
                                 resources.getDrawable(R.drawable.rounded_button)
@@ -122,6 +129,7 @@ open class ReportIssueActivity : BaseActivity() {
                     }
 
                     override fun onFailure(call: Call<IssueResponse>, t: Throwable) {
+                        progressbar.visibility = View.GONE
                         reportIssueButton.isEnabled = true
                         reportIssueButton.background =
                             resources.getDrawable(R.drawable.rounded_button)
@@ -257,9 +265,7 @@ open class ReportIssueActivity : BaseActivity() {
     }
 
     private fun requestPermissions() {
-
         startLocationPermissionRequest()
-
     }
 
     override fun onRequestPermissionsResult(

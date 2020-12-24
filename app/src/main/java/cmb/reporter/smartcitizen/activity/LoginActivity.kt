@@ -19,18 +19,22 @@ import retrofit2.Response
 class LoginActivity : BaseActivity() {
     private lateinit  var userIdEt: EditText
     private lateinit  var passwordEt: EditText
+    private lateinit var progressbar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
 
          userIdEt = findViewById(R.id.editText_userPhoneNumber)
          passwordEt = findViewById(R.id.editText_password)
+         progressbar = findViewById(R.id.progressBar)
 
         val buttonLogin = findViewById<Button>(R.id.button_login)
         buttonLogin.setOnClickListener {
             val userId = userIdEt.text.toString()
             val password = passwordEt.text.toString()
+
             if (userId.isNotEmpty() && password.isNotEmpty()) {
+                progressbar.visibility = View.VISIBLE
                 loginUser(this, userId, password)
             } else {
                 Toast.makeText(
@@ -97,10 +101,11 @@ class LoginActivity : BaseActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
+                progressbar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                val xx = 0
+                progressbar.visibility = View.GONE
             }
         })
     }

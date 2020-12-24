@@ -10,6 +10,9 @@ object AppData {
     private var categoryList: List<Category>? = null
     private var selectedIssue: IssueResponse? = null
 
+    const val selectArea = "Select Area"
+    const val selectDepartment = "Select Department"
+
     fun getAreas() = areaList ?: listOf()
     fun setAreas(areas: List<Area>) {
         areaList = areas
@@ -26,18 +29,18 @@ object AppData {
     }
 }
 
-fun getArea(areaId: Int): Area? {
-    return if (areaId == 0) {
+fun getArea(areaName: String?): Area? {
+    return if (areaName == null || areaName == AppData.selectArea) {
         null
     } else {
-        AppData.getAreas()[areaId]
+        AppData.getAreas().find { it.name == areaName }
     }
 }
 
-fun getCategory(categoryId: Int): Category? {
-    return if (categoryId == 0) {
+fun getCategory(categoryName: String?): Category? {
+    return if (categoryName == null || categoryName == AppData.selectDepartment) {
         null
     } else {
-        AppData.getCategory()[categoryId]
+        AppData.getCategory().find { it.name ==categoryName }
     }
 }

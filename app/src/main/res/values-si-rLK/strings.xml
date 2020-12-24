@@ -9,7 +9,7 @@
     <string name="register">ලියාපදිංචි වන්න</string>
     <string name="register_activity_name">MuniciPal - ලියාපදිංචි වන්න</string>
     <string name="password">මුරපදය</string>
-    <string name="phone_number">පරිශීලක නාමය</string>
+    <string name="phone_number_hint">පරිශීලක නාමය</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>

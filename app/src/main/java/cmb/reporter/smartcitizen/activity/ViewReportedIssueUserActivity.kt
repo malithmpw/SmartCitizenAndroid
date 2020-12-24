@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cmb.reporter.smartcitizen.AppData
 import cmb.reporter.smartcitizen.R
+import cmb.reporter.smartcitizen.adapter.EndlessRecyclerViewScrollListener
 import cmb.reporter.smartcitizen.adapter.SmartCitizenSpinnerAdapter
 import cmb.reporter.smartcitizen.adapter.UserIssueAdapter
 import cmb.reporter.smartcitizen.getArea
@@ -29,12 +31,14 @@ import java.util.*
 
 
 class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
-    var adapter: UserIssueAdapter? = null
+    lateinit var adapter: UserIssueAdapter
     var filterLayout: ConstraintLayout? = null
     var isFilterVisible = false
     var currentPageNo = 0
     private var areaSpinner: Spinner? = null
     private var categorySpinner: Spinner? = null
+    private lateinit var progressbar: ProgressBar
+    private var pageCount:Int? = 1
 
     private var etFromDate: DatePickerInputEditText? = null
     private var etToDate: DatePickerInputEditText? = null
@@ -42,6 +46,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_reported_issue_user_layout)
         val rv = findViewById<RecyclerView>(R.id.recycleView)
+        progressbar = findViewById(R.id.progressBar)
         filterLayout = findViewById(R.id.filter_layout)
         areaSpinner = findViewById(R.id.filter_spinner_area)
         categorySpinner = findViewById(R.id.filter_spinner_department)
@@ -50,6 +55,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         val filterButton = findViewById<Button>(R.id.filter_issue_button)
         filterButton.setOnClickListener {
             filterLayout?.visibility = View.GONE
+            isFilterVisible = false
             adapter?.clearData()
             currentPageNo = 0
             requestDataFromServer(currentPageNo)
@@ -60,7 +66,6 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         val sMonth1 = c1.get(Calendar.MONTH)
         val sDate1 = c1.get(Calendar.DAY_OF_MONTH)
         etToDate?.setText("${sYear1}/${sMonth1 + 1}/${sDate1}")
-        c1.add(Calendar.DAY_OF_MONTH,1)
         etToDate?.setDate(c1)
         val c2 = Calendar.getInstance()
         c2.add(Calendar.MONTH, -1)
@@ -68,7 +73,6 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         val eMonth2 = c2.get(Calendar.MONTH)
         val eDate2 = c2.get(Calendar.DAY_OF_MONTH)
         etFromDate?.setText("${eYear2}/${eMonth2 + 1}/${eDate2}")
-        c2.add(Calendar.DAY_OF_MONTH, -1)
         etFromDate?.setDate(c2)
         initSpinners()
         initAdapter(this, rv)
@@ -81,13 +85,20 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
-                    requestDataFromServer(pageNo = currentPageNo)
-                }
+//        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                if (pageCount != currentPageNo) {
+//                    requestDataFromServer(pageNo = currentPageNo)
+//                }
+//            }
+//        })
+        recyclerView.addOnScrollListener(object : EndlessRecyclerViewScrollListener(llm){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                requestDataFromServer(pageNo = currentPageNo)
+                val xs=0
             }
+
         })
     }
 
@@ -154,11 +165,11 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
     private fun requestDataFromServer(pageNo: Int) {
         val startDate: String = getDateString(etFromDate?.getDate()!!)
         val endDate: String = getDateString(etToDate?.getDate()!!)
-        val area = getArea((if (areaSpinner == null) 0 else areaSpinner!!.selectedItemId).toInt())
+        val area = getArea(areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String))
         val department =
-            getCategory((if (categorySpinner == null) 0 else categorySpinner!!.selectedItemId).toInt())
+            getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String))
         val userId = sharePrefUtil.getUser().id
-
+        progressbar.visibility = View.VISIBLE
         val issue = getIssue(
             pageNo = pageNo,
             userId = userId,
@@ -176,15 +187,17 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
                 call: Call<AllIssueResponse>,
                 response: Response<AllIssueResponse>
             ) {
+                progressbar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val data = response.body()?.issueList
+                    pageCount = response.body()?.pageCount
                     adapter?.updateData(data!!)
                 }
 
             }
 
             override fun onFailure(call: Call<AllIssueResponse>, t: Throwable) {
-
+                progressbar.visibility = View.GONE
             }
         })
     }

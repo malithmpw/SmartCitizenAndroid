@@ -192,7 +192,7 @@ class LandingActivity : BaseActivity() {
                     val areas = response.body()
                     areas?.let {
                         val areas = it.toMutableList()
-                        areas.add(0,  Area(-1,"Select Area"))
+                        areas.add(0,  Area(-1, AppData.selectArea))
                         AppData.setAreas(areas)
                     }
                 }
@@ -208,7 +208,7 @@ class LandingActivity : BaseActivity() {
                     val categories = response.body()
                     categories?.let {
                         val categories = it.toMutableList()
-                        categories.add(0,  Category(-1,"Select Department", ""))
+                        categories.add(0,  Category(-1,AppData.selectDepartment, ""))
                         AppData.setCategories(categories)
                     }
                 }

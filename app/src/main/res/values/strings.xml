@@ -9,7 +9,8 @@
     <string name="register">Register</string>
     <string name="register_activity_name">MuniciPal - Register</string>
     <string name="password">Password</string>
-    <string name="phone_number">Phone Number Eg: 0712345678</string>
+    <string name="phone_number_hint">Eg: 0712345678</string>
+    <string name="phone_number">Phone Number</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>
