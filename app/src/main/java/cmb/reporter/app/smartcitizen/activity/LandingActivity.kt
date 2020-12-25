@@ -152,37 +152,15 @@ class LandingActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             R.id.action_account -> {
-                showDialog(this)
+                startActivity(Intent(this, ChangePasswordActivity::class.java))
             }
             else -> {
             }
         }
         return true
     }
-
-    private fun showDialog(context: Context) {
-        val dialog = Dialog(context)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.user_account_layout)
-        dialog.window?.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-        val user = sharePrefUtil.getUser()
-        val name = dialog.findViewById(R.id.textView_account_name) as TextView
-        val role = dialog.findViewById(R.id.textView_account_role) as TextView
-        name.text = "${user.firstName} ${user.lastName}"
-        role.text = "${user.role.name}"
-        val ok = dialog.findViewById(R.id.button_account_ok) as Button
-        ok.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
 
     private fun initAppData(){
         val areaRequest = apiService.getAreas()

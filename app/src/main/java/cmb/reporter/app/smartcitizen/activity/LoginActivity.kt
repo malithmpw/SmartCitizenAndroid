@@ -8,6 +8,7 @@ import android.widget.*
 import cmb.reporter.app.smartcitizen.R
 import cmb.reporter.app.smartcitizen.models.LoginRequest
 import cmb.reporter.app.smartcitizen.models.LoginResponse
+import cmb.reporter.app.smartcitizen.security.EncryptUtil
 import cmb.reporter.app.smartcitizen.sharedPref.EN
 import cmb.reporter.app.smartcitizen.sharedPref.LANGUAGE
 import cmb.reporter.app.smartcitizen.sharedPref.SI
@@ -35,7 +36,7 @@ class LoginActivity : BaseActivity() {
 
             if (userId.isNotEmpty() && password.isNotEmpty()) {
                 progressbar.visibility = View.VISIBLE
-                loginUser(this, userId, password)
+                loginUser(this, userId, EncryptUtil.encryptPassword(password))
             } else {
                 Toast.makeText(
                     this,

@@ -13,6 +13,9 @@ interface SmartCityEndpoints {
     @POST("user/register")
     fun register(@Body register: RegisterUser): Call<RegisterUser>
 
+    @POST("user/password/reset")
+    fun changePassword(@Body changePassword: ChangePassword): Call<RegisterUser>
+
     @GET("area/all")
     fun getAreas(): Call<List<Area>>
 

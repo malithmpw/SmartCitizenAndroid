@@ -35,6 +35,7 @@
         <activity android:name=".activity.ReportIssueActivity" />
         <activity android:name=".activity.IssueDetailsActivity" />
         <activity android:name=".activity.ViewReportedIssueUserActivity" />
+        <activity android:name=".activity.ChangePasswordActivity" />
         <receiver android:name=".broadcast.SmartCitySmsBroadcastReceiver"
             android:exported="true">
             <intent-filter>

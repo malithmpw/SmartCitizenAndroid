@@ -30,6 +30,16 @@
     <string name="end_date">End Date:</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
+    <string name="name">Name</string>
+    <string name="role">Role</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="if_you_wish_to_change_the_password_enter_the_old_password_and_new_password_and_click_change_password">If you wish to change the password, Enter the old password and new password and click Change Password</string>
+    <string name="change_password">Change Password</string>
+    <string name="go_back">Go Back</string>
+    <string name="name_with_colon">Name:</string>
+    <string name="role_with_colon">Role:</string>
 
     <string-array name="languages">
         <item>Select Language</item>

@@ -18,11 +18,11 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import cmb.reporter.app.smartcitizen.AppData
 import cmb.reporter.app.smartcitizen.BuildConfig
 import cmb.reporter.app.smartcitizen.R
 import cmb.reporter.app.smartcitizen.models.RegisterUser
 import cmb.reporter.app.smartcitizen.models.Role
+import cmb.reporter.app.smartcitizen.security.EncryptUtil
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.HintRequest
@@ -100,14 +100,14 @@ class RegisterActivity : BaseActivity() {
             isPhoneNumberValid(phoneNo)
             val password = etPassword?.text.toString()
             val conPassword = confirmPassword?.text.toString()
-            if (isPhoneNumberVerified && password == conPassword && fName.isNotEmpty()
-                && lName.isNotEmpty() && password.isNotEmpty() && conPassword.isNotEmpty() && generatedOtp == etOTP?.text.toString()
+            if (isPhoneNumberVerified && fName.isNotEmpty()
+                && lName.isNotEmpty() && password.isNotEmpty() && conPassword.isNotEmpty() && password == conPassword && generatedOtp == etOTP?.text.toString()
             ) {
                 val registerUser = RegisterUser(
                     firstName = fName,
                     lastName = lName,
                     phoneNo = phoneNo,
-                    password = password,
+                    password = EncryptUtil.encryptPassword(password),
                     role = Role(id = 2, name = "USER"),
                     category = null,
                     email = null,
