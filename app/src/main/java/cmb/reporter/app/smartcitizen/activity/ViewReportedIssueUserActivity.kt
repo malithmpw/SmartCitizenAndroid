@@ -85,18 +85,9 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
-//        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                if (pageCount != currentPageNo) {
-//                    requestDataFromServer(pageNo = currentPageNo)
-//                }
-//            }
-//        })
         recyclerView.addOnScrollListener(object : EndlessRecyclerViewScrollListener(llm){
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 requestDataFromServer(pageNo = currentPageNo)
-                val xs=0
             }
 
         })

@@ -14,6 +14,7 @@ import cmb.reporter.app.smartcitizen.activity.IssueDetailsActivity
 import cmb.reporter.app.smartcitizen.models.IssueResponse
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import java.text.SimpleDateFormat
 
 
 class UserIssueAdapter(val context: Context) :
@@ -38,12 +39,12 @@ class UserIssueAdapter(val context: Context) :
         }
     }
 
-    fun updateData(data: List<IssueResponse>){
+    fun updateData(data: List<IssueResponse>) {
         list.addAll(data)
         notifyDataSetChanged()
     }
 
-    fun clearData(){
+    fun clearData() {
         list = mutableListOf()
     }
 
@@ -62,13 +63,24 @@ class UserIssueAdapter(val context: Context) :
             image.setImageViaGlide(context, "http://95.111.198.176:9001${issue.imageUrl[0]}")
             area.text = issue.area?.name
             description.text = issue.description
-            date.text = issue.createdDate
+            date.text = convertDateToReadableFormat(issue.createdDate)
             status.text = issue.status
         }
     }
 }
 
-fun ImageView.setImageViaGlide(context: Context, url: String, defaultImage: Int = R.drawable.issue_location){
+fun convertDateToReadableFormat(date: String): String {
+    val dateSubString = date.substring(0, 19)
+    val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+    val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm")
+    return formatter.format(parser.parse(dateSubString))
+}
+
+fun ImageView.setImageViaGlide(
+    context: Context,
+    url: String,
+    defaultImage: Int = R.drawable.issue_location
+) {
     val options: RequestOptions = RequestOptions()
         .placeholder(R.drawable.issue_location)
         .error(R.drawable.issue_location)
