@@ -1,10 +1,16 @@
 package cmb.reporter.app.smartcitizen.activity
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.*
+import cmb.reporter.app.smartcitizen.BuildConfig
 import cmb.reporter.app.smartcitizen.R
 import cmb.reporter.app.smartcitizen.models.LoginRequest
 import cmb.reporter.app.smartcitizen.models.LoginResponse
@@ -18,16 +24,18 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity : BaseActivity() {
-    private lateinit  var userIdEt: EditText
-    private lateinit  var passwordEt: EditText
+    private val PERMISSION_CODE = 1010
+    private lateinit var userIdEt: EditText
+    private lateinit var passwordEt: EditText
     private lateinit var progressbar: ProgressBar
+    private var permissionsDeniedCount = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
 
-         userIdEt = findViewById(R.id.editText_userPhoneNumber)
-         passwordEt = findViewById(R.id.editText_password)
-         progressbar = findViewById(R.id.progressBar)
+        userIdEt = findViewById(R.id.editText_userPhoneNumber)
+        passwordEt = findViewById(R.id.editText_password)
+        progressbar = findViewById(R.id.progressBar)
 
         val buttonLogin = findViewById<Button>(R.id.button_login)
         buttonLogin.setOnClickListener {
@@ -47,7 +55,7 @@ class LoginActivity : BaseActivity() {
         }
         val buttonRegister = findViewById<Button>(R.id.button_register)
         buttonRegister.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
+            goToRegisterActivityIfPermissionAvailable()
         }
 
         val languages = resources.getStringArray(R.array.languages)
@@ -109,6 +117,54 @@ class LoginActivity : BaseActivity() {
                 progressbar.visibility = View.GONE
             }
         })
+    }
+
+    private fun goToRegisterActivityIfPermissionAvailable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.SEND_SMS)
+                == PackageManager.PERMISSION_DENIED ||
+                checkSelfPermission(Manifest.permission.RECEIVE_SMS)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                //permission was not enabled
+                val permission =
+                    arrayOf(Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS)
+                //show popup to request permission
+                requestPermissions(permission, PERMISSION_CODE)
+            } else {
+                //permission already granted
+                startActivity(Intent(this, RegisterActivity::class.java))
+            }
+        } else {
+            //system os is < marshmallow
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(Intent(this, RegisterActivity::class.java))
+            } else {
+                if (permissionsDeniedCount == 2) {
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    val uri = Uri.fromParts(
+                        "package",
+                        BuildConfig.APPLICATION_ID, null
+                    )
+                    intent.data = uri
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                }else{
+                    permissionsDeniedCount++
+                }
+            }
+        }
     }
 
 
