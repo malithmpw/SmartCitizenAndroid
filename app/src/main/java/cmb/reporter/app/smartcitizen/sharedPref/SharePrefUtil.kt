@@ -60,6 +60,7 @@ class SharePrefUtil(context: Context) {
 const val USER_ROLE = "user_role"
 const val USER = "user"
 const val LANGUAGE = "language"
+const val PHONE_NUMBER = "phoneNumber"
 const val SI = "si"
 const val TA = "ta"
 const val EN = "en"
