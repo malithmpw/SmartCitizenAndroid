@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cmb.reporter.app.smartcitizen">
+    package="cmb.reporter.app.smartcitizenapp">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,7 +18,7 @@
         android:theme="@style/Theme.SmartCitizen"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activity.SplashActivity"
+            android:name="cmb.reporter.app.smartcitizenapp.activity.SplashActivity"
             android:theme="@style/SplashNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,15 +26,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.LanguagePreferenceActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.LandingActivity" />
-        <activity android:name=".activity.ReportIssueActivity" />
-        <activity android:name=".activity.IssueDetailsActivity" />
-        <activity android:name=".activity.ViewReportedIssueUserActivity" />
-        <activity android:name=".activity.ChangePasswordActivity" />
-        <activity android:name=".activity.VerifyNumberActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.LanguagePreferenceActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.LoginActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.RegisterActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.LandingActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ReportIssueActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.IssueDetailsActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ViewReportedIssueUserActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ChangePasswordActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.VerifyNumberActivity" />
 
     </application>
 

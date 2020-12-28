@@ -8,11 +8,11 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "cmb.reporter.app.smartcitizen"
+        applicationId "cmb.reporter.app.smartcitizenapp"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 7
-        versionName "1.0.7"
+        versionCode 1
+        versionName "1.0.1"
         multiDexEnabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

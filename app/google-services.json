@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "421248827854",
-    "project_id": "smartcitizen-android",
-    "storage_bucket": "smartcitizen-android.appspot.com"
+    "project_number": "613747337925",
+    "project_id": "smrtctzn-cdbe1",
+    "storage_bucket": "smrtctzn-cdbe1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:421248827854:android:972ab7bb78ec249e49eb9f",
+        "mobilesdk_app_id": "1:613747337925:android:1d1cca521b112c5b855eac",
         "android_client_info": {
-          "package_name": "cmb.reporter.app.smartcitizen"
+          "package_name": "cmb.reporter.app.smartcitizenapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "421248827854-vb0jl6tm1tq583m287h137qgm9satc04.apps.googleusercontent.com",
+          "client_id": "613747337925-0fo4r5d8mj9v8pnps95voqm9pjblcgni.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "cmb.reporter.app.smartcitizen",
+            "package_name": "cmb.reporter.app.smartcitizenapp",
             "certificate_hash": "a4e3d25c4ddad820fcf422b361f0837b21584c91"
           }
         },
         {
-          "client_id": "421248827854-505olih0o1ap6grgcj6a0df25egs9t89.apps.googleusercontent.com",
+          "client_id": "613747337925-ct9gee1ngq7qn83dicj8p2bp705eahfj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDW-9HT8qzV0NLGS2znm_Wgsyk0NWXJhZY"
+          "current_key": "AIzaSyAQzEnri_dFGpUwYfz9C2w5yAfGSBjQueo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "421248827854-505olih0o1ap6grgcj6a0df25egs9t89.apps.googleusercontent.com",
+              "client_id": "613747337925-ct9gee1ngq7qn83dicj8p2bp705eahfj.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
