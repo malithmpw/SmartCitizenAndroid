@@ -16,5 +16,6 @@ IssueResponse(
     val area: Area?,
     val user: User,
     val assignee: String?,
-    val assignBy: String?
+    val assignBy: String?,
+    var isSelected: Boolean = false
 ): Serializable

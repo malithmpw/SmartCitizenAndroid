@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,16 +18,16 @@ import com.bumptech.glide.request.RequestOptions
 import java.text.SimpleDateFormat
 
 
-class UserIssueAdapter(val context: Context) :
+class UserIssueAdapter(private val context: Context, private val isAdminView: Boolean) :
     RecyclerView.Adapter<UserIssueAdapter.ViewHolder>() {
     private var list: MutableList<IssueResponse> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(
-            R.layout.issue_row_user_layout,
+            if (isAdminView) R.layout.issue_row_admin_layout else R.layout.issue_row_user_layout,
             parent,
             false
         )
-        return ViewHolder(v)
+        return ViewHolder(v, isAdminView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -37,10 +38,24 @@ class UserIssueAdapter(val context: Context) :
             val intent = Intent(context, IssueDetailsActivity::class.java)
             context.startActivity(intent)
         }
+        if (isAdminView){
+            holder.itemView.findViewById<CheckBox>(R.id.row_checkBox).setOnClickListener{
+                val state = it.isSelected
+                issue.isSelected = !state
+            }
+        }
+
     }
 
     fun updateData(data: List<IssueResponse>) {
         list.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun changeSelectedState(selectAll: Boolean){
+        list.forEach {
+            it.isSelected = selectAll
+        }
         notifyDataSetChanged()
     }
 
@@ -52,14 +67,17 @@ class UserIssueAdapter(val context: Context) :
         return list.size
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val isAdminView: Boolean) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(context: Context, issue: IssueResponse) {
             val image = itemView.findViewById(R.id.row_imageView) as ImageView
             val area = itemView.findViewById(R.id.row_area_textView) as TextView
             val description = itemView.findViewById(R.id.row_description_textView) as TextView
             val date = itemView.findViewById(R.id.row_date_textView) as TextView
             val status = itemView.findViewById(R.id.row_status_textView) as TextView
-
+            if (isAdminView) {
+                val checkBox = itemView.findViewById(R.id.row_checkBox) as CheckBox
+                checkBox.isChecked = issue.isSelected
+            }
             image.setImageViaGlide(context, "http://95.111.198.176:9001${issue.imageUrl[0]}")
             area.text = issue.area?.name
             description.text = issue.description

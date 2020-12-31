@@ -43,6 +43,9 @@
     <string name="verify_number">Verify Number</string>
     <string name="verify_phone_number">Verify Phone Number</string>
     <string name="send_otp">Send OTP</string>
+    <string name="assign_to_me">Assign to Me</string>
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
 
     <string-array name="languages">
         <item>Select Language</item>

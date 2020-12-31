@@ -53,6 +53,11 @@ class VerifyNumberActivity : BaseActivity() {
                             .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks
                             .build()
                         PhoneAuthProvider.verifyPhoneNumber(options)
+                        Toast.makeText(
+                            this@VerifyNumberActivity,
+                            "OTP sent to your Number",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             } else {

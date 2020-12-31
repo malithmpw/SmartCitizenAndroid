@@ -33,6 +33,7 @@
         <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ReportIssueActivity" />
         <activity android:name="cmb.reporter.app.smartcitizenapp.activity.IssueDetailsActivity" />
         <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ViewReportedIssueUserActivity" />
+        <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ViewReportedIssueAdminActivity" />
         <activity android:name="cmb.reporter.app.smartcitizenapp.activity.ChangePasswordActivity" />
         <activity android:name="cmb.reporter.app.smartcitizenapp.activity.VerifyNumberActivity" />
 

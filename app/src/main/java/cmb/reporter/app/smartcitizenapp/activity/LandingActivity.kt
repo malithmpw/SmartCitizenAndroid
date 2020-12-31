@@ -55,6 +55,7 @@ class LandingActivity : BaseActivity() {
             if (userRole == "USER") {
                 startActivity(Intent(this, ViewReportedIssueUserActivity::class.java))
             } else if (userRole == "ADMIN") {
+                startActivity(Intent(this, ViewReportedIssueAdminActivity::class.java))
             }
         }
         reportNewOrAssignedIssueButton.setOnClickListener {

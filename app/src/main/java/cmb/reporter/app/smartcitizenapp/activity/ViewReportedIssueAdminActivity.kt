@@ -25,22 +25,51 @@ import retrofit2.Response
 import java.util.*
 
 
-class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
+class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     lateinit var adapter: UserIssueAdapter
     lateinit var appliedFilter: Filter
     var isFilterVisible = false
     var currentPageNo = 0
     private lateinit var progressbar: ProgressBar
     private var pageCount: Int? = 1
+    private var isSelectAllSelected = false
 
     private lateinit var filterBottomSheet:BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_reported_issue_user_layout)
+        setContentView(R.layout.view_reported_issue_admin_layout)
         val rv = findViewById<RecyclerView>(R.id.recycleView)
         progressbar = findViewById(R.id.progressBar)
         filterBottomSheet = createBottomSheetDialog(this)
+
+
+        val selectAllButton = findViewById<Button>(R.id.admin_select_all)
+        selectAllButton.setOnClickListener {
+
+            if (!isSelectAllSelected) {
+                isSelectAllSelected = true
+                selectAllButton.text = resources.getText(R.string.deselect_all)
+                adapter.changeSelectedState(isSelectAllSelected)
+            } else {
+                isSelectAllSelected = false
+                selectAllButton.text = resources.getText(R.string.select_all)
+                adapter.changeSelectedState(isSelectAllSelected)
+            }
+        }
+        val assignToMeOrAdmin = findViewById<Button>(R.id.assign_to_admin)
+        assignToMeOrAdmin.setOnClickListener {
+
+            if (!isSelectAllSelected) {
+                isSelectAllSelected = true
+                selectAllButton.text = resources.getText(R.string.deselect_all)
+                adapter.changeSelectedState(isSelectAllSelected)
+            } else {
+                isSelectAllSelected = false
+                selectAllButton.text = resources.getText(R.string.select_all)
+                adapter.changeSelectedState(isSelectAllSelected)
+            }
+        }
 
         val c1 = Calendar.getInstance()
         val c2 = Calendar.getInstance()
@@ -62,7 +91,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, false)
+        adapter = UserIssueAdapter(context, true)
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)

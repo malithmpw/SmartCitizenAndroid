@@ -12,6 +12,7 @@ object AppData {
 
     const val selectArea = "Select Area"
     const val selectDepartment = "Select Department"
+    const val selectStatus = "Select Status"
 
     fun getAreas() = areaList ?: listOf()
     fun setAreas(areas: List<Area>) {
@@ -27,6 +28,8 @@ object AppData {
     fun setSelectedIssue(issueResponse: IssueResponse) {
         selectedIssue = issueResponse
     }
+
+    fun getStatus() = listOf(selectStatus, "OPEN", "ASSIGNED", "CLOSED", "REJECTED")
 }
 
 fun getArea(areaName: String?): Area? {
@@ -41,6 +44,14 @@ fun getCategory(categoryName: String?): Category? {
     return if (categoryName == null || categoryName == AppData.selectDepartment) {
         null
     } else {
-        AppData.getCategory().find { it.name ==categoryName }
+        AppData.getCategory().find { it.name == categoryName }
+    }
+}
+
+fun getStatus(status: String?): String? {
+    return if (status == null || status == AppData.selectStatus) {
+        null
+    } else {
+        AppData.getStatus().find { it == status }
     }
 }
