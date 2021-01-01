@@ -8,11 +8,12 @@
         android:id="@+id/textView_landing_welcone_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="248dp"
+        android:layout_marginTop="120dp"
         android:text="Welcome Nuwan"
         android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,7 +48,7 @@
         android:id="@+id/button_landing_view_issues_assigned_to_me_or_report"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_button"
         android:text="@string/report_new_issue"
         android:textAllCaps="false"
