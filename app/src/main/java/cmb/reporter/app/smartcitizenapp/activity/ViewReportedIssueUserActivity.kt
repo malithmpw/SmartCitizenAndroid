@@ -46,7 +46,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         val c2 = Calendar.getInstance()
         c2.add(Calendar.MONTH, -1)
         initAdapter(this, rv)
-        appliedFilter = Filter(startDate = c2.getDateString(), endDate = c1.getDateString())
+        appliedFilter = Filter(startDate = c2.getFormattedDateString(), endDate = c1.getFormattedDateString())
         requestDataFromServer(
             currentPageNo,
             appliedFilter
@@ -62,7 +62,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, false)
+        adapter = UserIssueAdapter(context, false, {})
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)
@@ -135,7 +135,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
                 if (response.isSuccessful) {
                     val data = response.body()?.issueList
                     pageCount = response.body()?.pageCount
-                    adapter?.updateData(data!!)
+                    adapter.updateData(data!!)
                 }
 
             }
@@ -184,13 +184,13 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         val sYear1 = c1.get(Calendar.YEAR)
         val sMonth1 = c1.get(Calendar.MONTH)
         val sDate1 = c1.get(Calendar.DAY_OF_MONTH)
-        etToDate.setText("${sYear1}/${sMonth1 + 1}/${sDate1}")
+        etToDate.setText("${sYear1}/"+"${sMonth1 + 1}".toTwoDigitNumber()+"/"+"$sDate1".toTwoDigitNumber())
         val c2 = Calendar.getInstance()
         c2.add(Calendar.MONTH, -1)
         val eYear2 = c2.get(Calendar.YEAR)
         val eMonth2 = c2.get(Calendar.MONTH)
         val eDate2 = c2.get(Calendar.DAY_OF_MONTH)
-        etFromDate.setText("${eYear2}/${eMonth2 + 1}/${eDate2}")
+        etFromDate.setText("${eYear2}/"+"${eMonth2 + 1}".toTwoDigitNumber()+"/"+"$eDate2".toTwoDigitNumber())
         val areaAdapter =
             SmartCitizenSpinnerAdapter(context, AppData.getAreas().map { it.name })
         areaSpinner?.let {
@@ -229,7 +229,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
 
         etToDate.setOnClickListener{
             val dpd: DatePickerDialog = DatePickerDialog.newInstance(
-                { view, year, monthOfYear, dayOfMonth -> etToDate.setText("${year}/${monthOfYear + 1}/${dayOfMonth}")},
+                { view, year, monthOfYear, dayOfMonth -> etToDate.setText("${year}/"+"${monthOfYear + 1}".toTwoDigitNumber()+"/"+"$dayOfMonth".toTwoDigitNumber())},
                 c1[Calendar.YEAR],  // Initial year selection
                 c1[Calendar.MONTH],  // Initial month selection
                 c1[Calendar.DAY_OF_MONTH] // Inital day selection
@@ -240,7 +240,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         }
         etFromDate.setOnClickListener {
             val dpd: DatePickerDialog = DatePickerDialog.newInstance(
-                { view, year, monthOfYear, dayOfMonth -> etFromDate.setText("${year}/${monthOfYear + 1}/${dayOfMonth}")},
+                { view, year, monthOfYear, dayOfMonth -> etFromDate.setText("${year}/"+"${monthOfYear + 1}".toTwoDigitNumber()+"/"+"$dayOfMonth".toTwoDigitNumber())},
                 c2[Calendar.YEAR],  // Initial year selection
                 c2[Calendar.MONTH],  // Initial month selection
                 c2[Calendar.DAY_OF_MONTH] // Inital day selection

@@ -77,10 +77,20 @@ open class ReportIssueActivity : BaseActivity() {
                 getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String))
 
             val description = descriptionTv?.text.toString()
+            if( description.isEmpty()){
+                reportIssueButton.isEnabled = true
+                Toast.makeText(
+                    this@ReportIssueActivity,
+                    "Please a description of the issue",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
 
             val status = IssueStatus.OPEN.name
 
             if (encodedImage.isNullOrEmpty()) {
+                reportIssueButton.isEnabled = true
                 Toast.makeText(
                     this@ReportIssueActivity,
                     "Attach an Image",

@@ -9,3 +9,18 @@ fun Calendar.getDateString(): String {
         )
     }"
 }
+
+fun String.toTwoDigitNumber(): String {
+    return if (this.length == 1) {
+        "0${this}"
+    } else {
+        this
+    }
+}
+
+fun Calendar.getFormattedDateString():String{
+    val y = this.get(Calendar.YEAR)
+    val m = "${(this.get(Calendar.MONTH)+1)}"
+    val d = "${this.get(Calendar.DAY_OF_MONTH)}"
+    return "$y${m.toTwoDigitNumber()}${d.toTwoDigitNumber()}"
+}

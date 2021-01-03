@@ -13,14 +13,22 @@ import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.R
 import cmb.reporter.app.smartcitizenapp.activity.IssueDetailsActivity
 import cmb.reporter.app.smartcitizenapp.models.IssueResponse
+import cmb.reporter.app.smartcitizenapp.models.IssueStatus
+import cmb.reporter.app.smartcitizenapp.models.IssueUpdate
+import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import java.text.SimpleDateFormat
 
 
-class UserIssueAdapter(private val context: Context, private val isAdminView: Boolean) :
+class UserIssueAdapter(
+    private val context: Context,
+    private val isAdminView: Boolean,
+    val updateCountFunction: (count: String) -> Unit
+) :
     RecyclerView.Adapter<UserIssueAdapter.ViewHolder>() {
     private var list: MutableList<IssueResponse> = mutableListOf()
+    private val user = SharePrefUtil(context).getUser()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(
             if (isAdminView) R.layout.issue_row_admin_layout else R.layout.issue_row_user_layout,
@@ -38,13 +46,28 @@ class UserIssueAdapter(private val context: Context, private val isAdminView: Bo
             val intent = Intent(context, IssueDetailsActivity::class.java)
             context.startActivity(intent)
         }
-        if (isAdminView){
-            holder.itemView.findViewById<CheckBox>(R.id.row_checkBox).setOnClickListener{
+        if (isAdminView) {
+            holder.setIsRecyclable(false)
+            val checkBox = holder.itemView.findViewById<CheckBox>(R.id.row_checkBox)
+            checkBox.setOnClickListener {
                 val state = it.isSelected
                 issue.isSelected = !state
             }
+            if (issue.status != IssueStatus.OPEN.name) {
+                checkBox.visibility = View.INVISIBLE
+            }
         }
 
+    }
+
+    fun getSelectedItems(): List<IssueUpdate> {
+        val updateList = mutableListOf<IssueUpdate>()
+        list.forEach {
+            if (it.isSelected && it.status == IssueStatus.OPEN.name) {
+                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.ASSIGNED.name, user, user))
+            }
+        }
+        return updateList
     }
 
     fun updateData(data: List<IssueResponse>) {
@@ -52,9 +75,11 @@ class UserIssueAdapter(private val context: Context, private val isAdminView: Bo
         notifyDataSetChanged()
     }
 
-    fun changeSelectedState(selectAll: Boolean){
+    fun changeSelectedState(selectAll: Boolean) {
         list.forEach {
-            it.isSelected = selectAll
+            if (it.status == IssueStatus.OPEN.name) {
+                it.isSelected = selectAll
+            }
         }
         notifyDataSetChanged()
     }
@@ -67,7 +92,8 @@ class UserIssueAdapter(private val context: Context, private val isAdminView: Bo
         return list.size
     }
 
-    class ViewHolder(itemView: View, private val isAdminView: Boolean) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val isAdminView: Boolean) :
+        RecyclerView.ViewHolder(itemView) {
         fun bindItems(context: Context, issue: IssueResponse) {
             val image = itemView.findViewById(R.id.row_imageView) as ImageView
             val area = itemView.findViewById(R.id.row_area_textView) as TextView
@@ -103,4 +129,14 @@ fun ImageView.setImageViaGlide(
         .placeholder(R.drawable.issue_location)
         .error(R.drawable.issue_location)
     Glide.with(context).load(url).apply(options).into(this)
+}
+
+fun ImageView.setImageViaGlide(
+    context: Context,
+    imageDrawable: Int = R.drawable.logo
+) {
+    val options: RequestOptions = RequestOptions()
+        .placeholder(R.drawable.logo)
+        .error(R.drawable.logo).fitCenter()
+    Glide.with(context).load(imageDrawable).apply(options).into(this)
 }

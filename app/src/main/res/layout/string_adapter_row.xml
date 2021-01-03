@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="start"
     android:layout_margin="4dp">
 
     <TextView
@@ -11,7 +12,6 @@
         android:layout_height="35dp"
         android:paddingStart="@dimen/padding8"
         android:paddingEnd="@dimen/padding8"
-        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_18"
         app:layout_constraintEnd_toEndOf="parent"

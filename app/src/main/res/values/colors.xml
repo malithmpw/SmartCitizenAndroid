@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#801919</color>
     <color name="disabled_button">#7A7979</color>
+    <color name="bg_disabled">#F1F0F0</color>
 </resources>

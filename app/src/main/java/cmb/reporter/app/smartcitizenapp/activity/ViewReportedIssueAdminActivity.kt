@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Spinner
+import android.widget.*
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +14,8 @@ import cmb.reporter.app.smartcitizenapp.adapter.EndlessRecyclerViewScrollListene
 import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdapter
 import cmb.reporter.app.smartcitizenapp.adapter.UserIssueAdapter
 import cmb.reporter.app.smartcitizenapp.models.*
+import cmb.reporter.app.smartcitizenapp.models.Filter
+import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import retrofit2.Call
@@ -33,20 +32,23 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     private lateinit var progressbar: ProgressBar
     private var pageCount: Int? = 1
     private var isSelectAllSelected = false
+    private var isSelectAllButtonClicked = false
+    private lateinit var selectAllButton:Button
 
-    private lateinit var filterBottomSheet:BottomSheetDialog
+    private lateinit var filterBottomSheet: BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_reported_issue_admin_layout)
         val rv = findViewById<RecyclerView>(R.id.recycleView)
+
         progressbar = findViewById(R.id.progressBar)
         filterBottomSheet = createBottomSheetDialog(this)
 
 
-        val selectAllButton = findViewById<Button>(R.id.admin_select_all)
+        selectAllButton = findViewById(R.id.admin_select_all)
         selectAllButton.setOnClickListener {
-
+            isSelectAllButtonClicked = true
             if (!isSelectAllSelected) {
                 isSelectAllSelected = true
                 selectAllButton.text = resources.getText(R.string.deselect_all)
@@ -59,15 +61,13 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         }
         val assignToMeOrAdmin = findViewById<Button>(R.id.assign_to_admin)
         assignToMeOrAdmin.setOnClickListener {
+            val user = sharePrefUtil.getUser()
+            if (user.role.name == "ADMIN") {
+                val selectedIssues = adapter.getSelectedItems()
+                updateAssignToMe(selectedIssues)
 
-            if (!isSelectAllSelected) {
-                isSelectAllSelected = true
-                selectAllButton.text = resources.getText(R.string.deselect_all)
-                adapter.changeSelectedState(isSelectAllSelected)
-            } else {
-                isSelectAllSelected = false
-                selectAllButton.text = resources.getText(R.string.select_all)
-                adapter.changeSelectedState(isSelectAllSelected)
+            } else if (user.role.name == "SUPERADMIN") {
+
             }
         }
 
@@ -75,11 +75,44 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         val c2 = Calendar.getInstance()
         c2.add(Calendar.MONTH, -1)
         initAdapter(this, rv)
-        appliedFilter = Filter(startDate = c2.getDateString(), endDate = c1.getDateString())
+        appliedFilter =
+            Filter(startDate = c2.getFormattedDateString(), endDate = c1.getFormattedDateString())
         requestDataFromServer(
             currentPageNo,
             appliedFilter
         )
+    }
+
+    private fun updateAssignToMe(list: List<IssueUpdate>) {
+        val call = apiService.updateIssues(list)
+        call.enqueue(object : Callback<List<IssueResponse>> {
+            override fun onResponse(
+                call: Call<List<IssueResponse>>,
+                response: Response<List<IssueResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    isSelectAllSelected = false
+                    selectAllButton.text = resources.getText(R.string.select_all)
+                    requestFilteredDataFromServer(filter = appliedFilter)
+
+                }
+            }
+
+            override fun onFailure(call: Call<List<IssueResponse>>, t: Throwable) {
+                Toast.makeText(
+                    this@ViewReportedIssueAdminActivity,
+                    "Failed To Assign, Try again",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
+    }
+
+    private fun setSelectedCount(count: String) {
+        if (isSelectAllButtonClicked) {
+            title = count
+        }
     }
 
     private fun requestFilteredDataFromServer(filter: Filter) {
@@ -91,7 +124,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, true)
+        adapter = UserIssueAdapter(context, true, ::setSelectedCount)
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)
@@ -164,7 +197,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
                 if (response.isSuccessful) {
                     val data = response.body()?.issueList
                     pageCount = response.body()?.pageCount
-                    adapter?.updateData(data!!)
+                    adapter.updateData(data!!)
                 }
 
             }
@@ -197,7 +230,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         return true
     }
 
-    private fun createBottomSheetDialog(context: Context) :BottomSheetDialog {
+    private fun createBottomSheetDialog(context: Context): BottomSheetDialog {
         val view = layoutInflater.inflate(R.layout.filter_issue_layout, null)
         val dialog = BottomSheetDialog(this)
         dialog.setCancelable(false)
@@ -213,13 +246,13 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         val sYear1 = c1.get(Calendar.YEAR)
         val sMonth1 = c1.get(Calendar.MONTH)
         val sDate1 = c1.get(Calendar.DAY_OF_MONTH)
-        etToDate.setText("${sYear1}/${sMonth1 + 1}/${sDate1}")
+        etToDate.setText("${sYear1}/" + "${sMonth1 + 1}".toTwoDigitNumber() + "/" + "$sDate1".toTwoDigitNumber())
         val c2 = Calendar.getInstance()
         c2.add(Calendar.MONTH, -1)
         val eYear2 = c2.get(Calendar.YEAR)
         val eMonth2 = c2.get(Calendar.MONTH)
         val eDate2 = c2.get(Calendar.DAY_OF_MONTH)
-        etFromDate.setText("${eYear2}/${eMonth2 + 1}/${eDate2}")
+        etFromDate.setText("${eYear2}/" + "${eMonth2 + 1}".toTwoDigitNumber() + "/" + "$eDate2".toTwoDigitNumber())
         val areaAdapter =
             SmartCitizenSpinnerAdapter(context, AppData.getAreas().map { it.name })
         areaSpinner?.let {
@@ -247,8 +280,8 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             val status =
                 getStatus(status = statusSpinner.selectedItem as String)
             val f = Filter(
-                startDate = etFromDate.text.toString().replace("/",""),
-                endDate = etToDate.text.toString().replace("/",""),
+                startDate = etFromDate.text.toString().replace("/", ""),
+                endDate = etToDate.text.toString().replace("/", ""),
                 area = area,
                 department = department,
                 status = status
@@ -256,9 +289,9 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             requestFilteredDataFromServer(f)
         }
 
-        etToDate.setOnClickListener{
+        etToDate.setOnClickListener {
             val dpd: DatePickerDialog = DatePickerDialog.newInstance(
-                { view, year, monthOfYear, dayOfMonth -> etToDate.setText("${year}/${monthOfYear + 1}/${dayOfMonth}")},
+                { view, year, monthOfYear, dayOfMonth -> etToDate.setText("${year}/" + "${monthOfYear + 1}".toTwoDigitNumber() + "/" + "$dayOfMonth".toTwoDigitNumber()) },
                 c1[Calendar.YEAR],  // Initial year selection
                 c1[Calendar.MONTH],  // Initial month selection
                 c1[Calendar.DAY_OF_MONTH] // Inital day selection
@@ -269,7 +302,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         }
         etFromDate.setOnClickListener {
             val dpd: DatePickerDialog = DatePickerDialog.newInstance(
-                { view, year, monthOfYear, dayOfMonth -> etFromDate.setText("${year}/${monthOfYear + 1}/${dayOfMonth}")},
+                { view, year, monthOfYear, dayOfMonth -> etFromDate.setText("${year}/" + "${monthOfYear + 1}".toTwoDigitNumber() + "/" + "$dayOfMonth".toTwoDigitNumber()) },
                 c2[Calendar.YEAR],  // Initial year selection
                 c2[Calendar.MONTH],  // Initial month selection
                 c2[Calendar.DAY_OF_MONTH] // Inital day selection

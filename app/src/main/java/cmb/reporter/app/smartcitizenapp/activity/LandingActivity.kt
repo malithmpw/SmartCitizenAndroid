@@ -10,11 +10,13 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.BuildConfig
 import cmb.reporter.app.smartcitizenapp.R
+import cmb.reporter.app.smartcitizenapp.adapter.setImageViaGlide
 import cmb.reporter.app.smartcitizenapp.models.Area
 import cmb.reporter.app.smartcitizenapp.models.Category
 import cmb.reporter.app.smartcitizenapp.models.User
@@ -34,6 +36,9 @@ class LandingActivity : BaseActivity() {
         val viewIssueButton = findViewById<Button>(R.id.button_landing_view_issues_reported)
         val reportNewOrAssignedIssueButton =
             findViewById<Button>(R.id.button_landing_view_issues_assigned_to_me_or_report)
+
+       val logoImage = findViewById<ImageView>(R.id.imageView_logo)
+        logoImage.setImageViaGlide(this, R.drawable.logo)
 
         val user: User = sharePrefUtil.getUser()
         userRole = user.role.name
@@ -159,7 +164,7 @@ class LandingActivity : BaseActivity() {
         return true
     }
 
-    private fun initAppData(){
+    private fun initAppData() {
         val areaRequest = apiService.getAreas()
         areaRequest.enqueue(object : Callback<List<Area>> {
             override fun onResponse(call: Call<List<Area>>, response: Response<List<Area>>) {
@@ -167,27 +172,32 @@ class LandingActivity : BaseActivity() {
                     val areas = response.body()
                     areas?.let {
                         val areas = it.toMutableList()
-                        areas.add(0,  Area(-1, AppData.selectArea))
+                        areas.add(0, Area(-1, AppData.selectArea))
                         AppData.setAreas(areas)
                     }
                 }
             }
+
             override fun onFailure(call: Call<List<Area>>, t: Throwable) {
             }
         })
 
         val categoryRequest = apiService.getCategories()
         categoryRequest.enqueue(object : Callback<List<Category>> {
-            override fun onResponse(call: Call<List<Category>>, response: Response<List<Category>>) {
+            override fun onResponse(
+                call: Call<List<Category>>,
+                response: Response<List<Category>>
+            ) {
                 if (response.isSuccessful) {
                     val categories = response.body()
                     categories?.let {
                         val categories = it.toMutableList()
-                        categories.add(0,  Category(-1, AppData.selectDepartment, ""))
+                        categories.add(0, Category(-1, AppData.selectDepartment, ""))
                         AppData.setCategories(categories)
                     }
                 }
             }
+
             override fun onFailure(call: Call<List<Category>>, t: Throwable) {
             }
         })
