@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.recyclerview.widget.RecyclerView
 import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.R
@@ -17,6 +18,8 @@ import cmb.reporter.app.smartcitizenapp.models.IssueStatus
 import cmb.reporter.app.smartcitizenapp.models.IssueUpdate
 import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.request.RequestOptions
 import java.text.SimpleDateFormat
 
@@ -24,6 +27,7 @@ import java.text.SimpleDateFormat
 class UserIssueAdapter(
     private val context: Context,
     private val isAdminView: Boolean,
+    private val pageType: String?,
     val updateCountFunction: (count: String) -> Unit
 ) :
     RecyclerView.Adapter<UserIssueAdapter.ViewHolder>() {
@@ -48,23 +52,32 @@ class UserIssueAdapter(
         }
         if (isAdminView) {
             holder.setIsRecyclable(false)
-            val checkBox = holder.itemView.findViewById<CheckBox>(R.id.row_checkBox)
+            val checkBox = holder.itemView.findViewById<AppCompatCheckBox>(R.id.row_checkBox)
             checkBox.setOnClickListener {
-                val state = it.isSelected
-                issue.isSelected = !state
+                val state = (it as AppCompatCheckBox).isChecked
+                issue.isSelected = state
             }
-            if (issue.status != IssueStatus.OPEN.name) {
-                checkBox.visibility = View.INVISIBLE
+            if (!pageType.isNullOrEmpty()) {
+                if (issue.status == IssueStatus.OPEN.name || issue.status == IssueStatus.REJECTED.name || issue.status == IssueStatus.RESOLVED.name) {
+                    checkBox.visibility = View.INVISIBLE
+                } else if (issue.status == IssueStatus.ASSIGNED.name) {
+                    checkBox.visibility = View.VISIBLE
+                }
+            } else {
+                if (issue.status == IssueStatus.REJECTED.name || issue.status == IssueStatus.RESOLVED.name || issue.status == IssueStatus.ASSIGNED.name) {
+                    checkBox.visibility = View.INVISIBLE
+                }
             }
         }
-
     }
 
-    fun getSelectedItems(): List<IssueUpdate> {
+    fun getSelectedItems(isResolvedList: Boolean = false): List<IssueUpdate> {
         val updateList = mutableListOf<IssueUpdate>()
         list.forEach {
-            if (it.isSelected && it.status == IssueStatus.OPEN.name) {
+            if (it.isSelected && !isResolvedList && it.status == IssueStatus.OPEN.name) {
                 updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.ASSIGNED.name, user, user))
+            } else if (it.isSelected && isResolvedList && it.status == IssueStatus.ASSIGNED.name) {
+                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.RESOLVED.name, null, null))
             }
         }
         return updateList
@@ -75,10 +88,16 @@ class UserIssueAdapter(
         notifyDataSetChanged()
     }
 
-    fun changeSelectedState(selectAll: Boolean) {
+    fun changeSelectedState(selectAll: Boolean, isResolvedList: Boolean = false) {
         list.forEach {
-            if (it.status == IssueStatus.OPEN.name) {
-                it.isSelected = selectAll
+            if (isResolvedList) {
+                if (it.status == IssueStatus.ASSIGNED.name ) {
+                    it.isSelected = selectAll
+                }
+            } else {
+                if (it.status == IssueStatus.OPEN.name ) {
+                    it.isSelected = selectAll
+                }
             }
         }
         notifyDataSetChanged()
@@ -128,6 +147,7 @@ fun ImageView.setImageViaGlide(
     val options: RequestOptions = RequestOptions()
         .placeholder(R.drawable.issue_location)
         .error(R.drawable.issue_location)
+        .centerCrop()
     Glide.with(context).load(url).apply(options).into(this)
 }
 

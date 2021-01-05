@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/imageView_logo"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:layout_margin="8dp"
         android:background="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView_landing_welcone_username"
+        android:id="@+id/textView_landing_welcome_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -26,7 +26,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView_landing_welcone_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView_logo" />
 
@@ -40,13 +39,13 @@
         android:text="@string/landing_page_message_user"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView_landing_welcone_username" />
+        app:layout_constraintTop_toBottomOf="@id/textView_landing_welcome_username" />
 
     <Button
         android:id="@+id/button_landing_view_issues_reported"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button"
         android:text="@string/my_reported_issues"
         android:textAllCaps="false"
@@ -61,7 +60,7 @@
         android:id="@+id/button_landing_view_issues_assigned_to_me_or_report"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/rounded_button"
         android:text="@string/report_new_issue"
         android:textAllCaps="false"

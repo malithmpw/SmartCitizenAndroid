@@ -31,13 +31,13 @@ class LandingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.landing_activity)
-        val welcomeUserName = findViewById<TextView>(R.id.textView_landing_welcone_username)
+        val welcomeUserName = findViewById<TextView>(R.id.textView_landing_welcome_username)
         val welcomeDescription = findViewById<TextView>(R.id.textView_landing_welcone_description)
         val viewIssueButton = findViewById<Button>(R.id.button_landing_view_issues_reported)
         val reportNewOrAssignedIssueButton =
             findViewById<Button>(R.id.button_landing_view_issues_assigned_to_me_or_report)
 
-       val logoImage = findViewById<ImageView>(R.id.imageView_logo)
+        val logoImage = findViewById<ImageView>(R.id.imageView_logo)
         logoImage.setImageViaGlide(this, R.drawable.logo)
 
         val user: User = sharePrefUtil.getUser()
@@ -64,7 +64,14 @@ class LandingActivity : BaseActivity() {
             }
         }
         reportNewOrAssignedIssueButton.setOnClickListener {
-            checkPermissionBeforeReportIssue()
+
+            if (userRole == "USER") {
+                checkPermissionBeforeReportIssue()
+            } else if (userRole == "ADMIN" || userRole == "SUPERADMIN") {
+                val intent = Intent(this, ViewReportedIssueAdminActivity::class.java)
+                intent.putExtra("pageType", "resolveIssue")
+                startActivity(intent)
+            }
         }
     }
 

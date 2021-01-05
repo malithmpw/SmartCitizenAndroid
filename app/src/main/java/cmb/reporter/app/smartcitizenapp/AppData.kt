@@ -29,7 +29,7 @@ object AppData {
         selectedIssue = issueResponse
     }
 
-    fun getStatus() = listOf(selectStatus, "OPEN", "ASSIGNED", "CLOSED", "REJECTED")
+    fun getStatus(isResolvedList:Boolean) = if (!isResolvedList) listOf(selectStatus, "OPEN", "ASSIGNED", "RESOLVED", "REJECTED") else  listOf(selectStatus, "ASSIGNED", "RESOLVED")
 }
 
 fun getArea(areaName: String?): Area? {
@@ -52,6 +52,6 @@ fun getStatus(status: String?): String? {
     return if (status == null || status == AppData.selectStatus) {
         null
     } else {
-        AppData.getStatus().find { it == status }
+        AppData.getStatus(false).find { it == status }
     }
 }

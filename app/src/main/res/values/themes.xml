@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/theme</item>
         <item name="colorPrimaryDark">@color/theme</item>
         <item name="colorAccent">@color/theme</item>
+        <item name="android:fitsSystemWindows">true</item>
         <!-- Customize your theme here. -->
     </style>
     <!-- This style is for the splash screen -->

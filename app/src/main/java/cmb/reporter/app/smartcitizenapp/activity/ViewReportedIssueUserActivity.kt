@@ -62,7 +62,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, false, {})
+        adapter = UserIssueAdapter(context, false, null, {})
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)
@@ -204,7 +204,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
         }
 
         val statusAdapter =
-            SmartCitizenSpinnerAdapter(context, AppData.getStatus())
+            SmartCitizenSpinnerAdapter(context, AppData.getStatus(isResolvedList = false))
         statusSpinner?.let {
             it.adapter = statusAdapter
         }

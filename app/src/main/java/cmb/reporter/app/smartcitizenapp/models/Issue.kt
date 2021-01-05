@@ -12,5 +12,5 @@ data class Issue(
 )
 
 enum class IssueStatus {
-    OPEN, ASSIGNED, CLOSED, REJECTED
+    OPEN, ASSIGNED, RESOLVED, REJECTED
 }

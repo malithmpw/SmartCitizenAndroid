@@ -46,6 +46,7 @@
     <string name="assign_to_me">Assign to Me</string>
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
+    <string name="resolve">Resolve</string>
 
     <string-array name="languages">
         <item>Select Language</item>

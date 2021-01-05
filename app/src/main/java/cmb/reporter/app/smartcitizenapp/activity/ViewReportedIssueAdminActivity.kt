@@ -34,12 +34,15 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     private var isSelectAllSelected = false
     private var isSelectAllButtonClicked = false
     private lateinit var selectAllButton:Button
+    private var pageType:String? = null
 
     private lateinit var filterBottomSheet: BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_reported_issue_admin_layout)
+
+        pageType = intent.getStringExtra("pageType")
         val rv = findViewById<RecyclerView>(R.id.recycleView)
 
         progressbar = findViewById(R.id.progressBar)
@@ -52,20 +55,22 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             if (!isSelectAllSelected) {
                 isSelectAllSelected = true
                 selectAllButton.text = resources.getText(R.string.deselect_all)
-                adapter.changeSelectedState(isSelectAllSelected)
+                adapter.changeSelectedState(isSelectAllSelected, !pageType.isNullOrEmpty())
             } else {
                 isSelectAllSelected = false
                 selectAllButton.text = resources.getText(R.string.select_all)
-                adapter.changeSelectedState(isSelectAllSelected)
+                adapter.changeSelectedState(isSelectAllSelected, !pageType.isNullOrEmpty())
             }
         }
         val assignToMeOrAdmin = findViewById<Button>(R.id.assign_to_admin)
+        if (!pageType.isNullOrEmpty()){
+            assignToMeOrAdmin.setText(R.string.resolve)
+        }
         assignToMeOrAdmin.setOnClickListener {
             val user = sharePrefUtil.getUser()
             if (user.role.name == "ADMIN") {
-                val selectedIssues = adapter.getSelectedItems()
+                val selectedIssues = adapter.getSelectedItems(!pageType.isNullOrEmpty())
                 updateAssignToMe(selectedIssues)
-
             } else if (user.role.name == "SUPERADMIN") {
 
             }
@@ -77,13 +82,16 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         initAdapter(this, rv)
         appliedFilter =
             Filter(startDate = c2.getFormattedDateString(), endDate = c1.getFormattedDateString())
+        if (!pageType.isNullOrEmpty()){
+            appliedFilter.status = IssueStatus.ASSIGNED.name
+        }
         requestDataFromServer(
             currentPageNo,
             appliedFilter
         )
     }
 
-    private fun updateAssignToMe(list: List<IssueUpdate>) {
+    private fun updateAssignToMe(list: List<IssueUpdate>, isResolvePage:Boolean = false) {
         val call = apiService.updateIssues(list)
         call.enqueue(object : Callback<List<IssueResponse>> {
             override fun onResponse(
@@ -101,7 +109,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             override fun onFailure(call: Call<List<IssueResponse>>, t: Throwable) {
                 Toast.makeText(
                     this@ViewReportedIssueAdminActivity,
-                    "Failed To Assign, Try again",
+                    "Failed To ${if (isResolvePage) "Resolve" else "Assign"}, Try again",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -124,7 +132,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, true, ::setSelectedCount)
+        adapter = UserIssueAdapter(context, true, pageType, ::setSelectedCount)
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)
@@ -266,7 +274,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         }
 
         val statusAdapter =
-            SmartCitizenSpinnerAdapter(context, AppData.getStatus())
+            SmartCitizenSpinnerAdapter(context, AppData.getStatus(!pageType.isNullOrEmpty()))
         statusSpinner?.let {
             it.adapter = statusAdapter
         }
