@@ -70,7 +70,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             val user = sharePrefUtil.getUser()
             if (user.role.name == "ADMIN") {
                 val selectedIssues = adapter.getSelectedItems(!pageType.isNullOrEmpty())
-                updateAssignToMe(selectedIssues)
+                updateAssignToMe(selectedIssues, !pageType.isNullOrEmpty())
             } else if (user.role.name == "SUPERADMIN") {
 
             }
@@ -85,6 +85,11 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         if (!pageType.isNullOrEmpty()){
             appliedFilter.status = IssueStatus.ASSIGNED.name
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         requestDataFromServer(
             currentPageNo,
             appliedFilter
@@ -117,12 +122,6 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         })
     }
 
-    private fun setSelectedCount(count: String) {
-        if (isSelectAllButtonClicked) {
-            title = count
-        }
-    }
-
     private fun requestFilteredDataFromServer(filter: Filter) {
         isFilterVisible = false
         appliedFilter = filter
@@ -132,7 +131,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, true, pageType, ::setSelectedCount)
+        adapter = UserIssueAdapter(context, true, pageType)
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)

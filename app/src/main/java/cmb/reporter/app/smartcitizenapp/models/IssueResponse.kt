@@ -17,5 +17,6 @@ IssueResponse(
     val user: User,
     val assignee: User?,
     val assignBy: User?,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    var directions:String?
 ): Serializable

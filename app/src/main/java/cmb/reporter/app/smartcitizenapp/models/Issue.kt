@@ -9,6 +9,7 @@ data class Issue(
     val status: String,
     val lat: Double,
     val lon: Double,
+    val directions:String? = null
 )
 
 enum class IssueStatus {

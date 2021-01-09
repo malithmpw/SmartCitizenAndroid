@@ -62,7 +62,7 @@ class ViewReportedIssueUserActivity : BaseActivity(), LifecycleOwner {
     }
 
     private fun initAdapter(context: Context, recyclerView: RecyclerView) {
-        adapter = UserIssueAdapter(context, false, null, {})
+        adapter = UserIssueAdapter(context, false, null)
         val llm = LinearLayoutManager(context)
         recyclerView.layoutManager = llm
         recyclerView.setHasFixedSize(true)

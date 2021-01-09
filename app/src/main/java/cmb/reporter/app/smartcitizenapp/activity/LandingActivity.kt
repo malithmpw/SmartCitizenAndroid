@@ -42,30 +42,44 @@ class LandingActivity : BaseActivity() {
 
         val user: User = sharePrefUtil.getUser()
         userRole = user.role.name
-        welcomeUserName.text = "Welcome ${user.firstName}"
-        if (userRole == "USER") {
-            welcomeDescription.text = resources.getString(R.string.landing_page_message_user)
-            viewIssueButton.text = resources.getString(R.string.my_reported_issues)
-            reportNewOrAssignedIssueButton.text = resources.getString(R.string.report_new_issue)
-        } else if (userRole == "ADMIN") {
-            welcomeDescription.text = resources.getString(R.string.landing_page_message_admin)
-            viewIssueButton.text = resources.getString(R.string.view_issues_reported)
-            reportNewOrAssignedIssueButton.text =
-                resources.getString(R.string.issues_assigned_to_me)
+        welcomeUserName.text = "${resources.getString(R.string.welcome_name)}${user.firstName}"
+        when (userRole) {
+            "USER" -> {
+                welcomeDescription.text = resources.getString(R.string.landing_page_message_user)
+                viewIssueButton.text = resources.getString(R.string.my_reported_issues)
+                reportNewOrAssignedIssueButton.text = resources.getString(R.string.report_new_issue)
+            }
+            "SUPERUSER" -> {
+                welcomeDescription.text = resources.getString(R.string.landing_page_message_user)
+                viewIssueButton.text = resources.getString(R.string.all_reported_issues)
+                reportNewOrAssignedIssueButton.text = resources.getString(R.string.report_new_issue)
+            }
+            "ADMIN" -> {
+                welcomeDescription.text = resources.getString(R.string.landing_page_message_admin)
+                viewIssueButton.text = resources.getString(R.string.view_issues_reported)
+                reportNewOrAssignedIssueButton.text =
+                    resources.getString(R.string.issues_assigned_to_me)
+            }
+            "SUPERADMIN" -> {
+                welcomeDescription.text = resources.getString(R.string.landing_page_message_admin)
+                viewIssueButton.text = resources.getString(R.string.view_issues_reported)
+                reportNewOrAssignedIssueButton.text =
+                    resources.getString(R.string.issues_assigned_to_me)
+            }
         }
 
         //TODO decide which user role is logged in and change button label and functionality based on that
 
         viewIssueButton.setOnClickListener {
-            if (userRole == "USER") {
+            if (userRole == "USER" || userRole == "SUPERUSER") {
                 startActivity(Intent(this, ViewReportedIssueUserActivity::class.java))
-            } else if (userRole == "ADMIN") {
+            } else if (userRole == "ADMIN" || userRole == "SUPERADMIN") {
                 startActivity(Intent(this, ViewReportedIssueAdminActivity::class.java))
             }
         }
         reportNewOrAssignedIssueButton.setOnClickListener {
 
-            if (userRole == "USER") {
+            if (userRole == "USER" || userRole == "SUPERUSER") {
                 checkPermissionBeforeReportIssue()
             } else if (userRole == "ADMIN" || userRole == "SUPERADMIN") {
                 val intent = Intent(this, ViewReportedIssueAdminActivity::class.java)
@@ -76,10 +90,7 @@ class LandingActivity : BaseActivity() {
     }
 
     private fun goToReportIssueActivity() {
-        if (userRole == "USER") {
-            startActivity(Intent(this, ReportIssueActivity::class.java))
-        } else if (userRole == "ADMIN") {
-        }
+        startActivity(Intent(this, ReportIssueActivity::class.java))
     }
 
     override fun onResume() {
@@ -93,19 +104,13 @@ class LandingActivity : BaseActivity() {
             if (checkSelfPermission(Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED ||
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_DENIED ||
-                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_DENIED ||
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_DENIED
             ) {
                 //permission was not enabled
                 val permission =
                     arrayOf(
                         Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                 //show popup to request permission
                 requestPermissions(permission, PERMISSION_CODE)
@@ -130,7 +135,7 @@ class LandingActivity : BaseActivity() {
                     //permission from popup was granted
                     goToReportIssueActivity()
                 } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, resources.getString(R.string.permissions_not_granted), Toast.LENGTH_SHORT).show()
                     val intent = Intent()
                     intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     val uri = Uri.fromParts(

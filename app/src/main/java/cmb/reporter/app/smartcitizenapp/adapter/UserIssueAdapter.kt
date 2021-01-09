@@ -2,6 +2,7 @@ package cmb.reporter.app.smartcitizenapp.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +19,9 @@ import cmb.reporter.app.smartcitizenapp.models.IssueStatus
 import cmb.reporter.app.smartcitizenapp.models.IssueUpdate
 import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import java.text.SimpleDateFormat
 
@@ -27,8 +29,7 @@ import java.text.SimpleDateFormat
 class UserIssueAdapter(
     private val context: Context,
     private val isAdminView: Boolean,
-    private val pageType: String?,
-    val updateCountFunction: (count: String) -> Unit
+    private val pageType: String?
 ) :
     RecyclerView.Adapter<UserIssueAdapter.ViewHolder>() {
     private var list: MutableList<IssueResponse> = mutableListOf()
@@ -61,7 +62,11 @@ class UserIssueAdapter(
                 if (issue.status == IssueStatus.OPEN.name || issue.status == IssueStatus.REJECTED.name || issue.status == IssueStatus.RESOLVED.name) {
                     checkBox.visibility = View.INVISIBLE
                 } else if (issue.status == IssueStatus.ASSIGNED.name) {
-                    checkBox.visibility = View.VISIBLE
+                    if (user.id == issue.assignee?.id) {
+                        checkBox.visibility = View.VISIBLE
+                    } else {
+                        checkBox.visibility = View.INVISIBLE
+                    }
                 }
             } else {
                 if (issue.status == IssueStatus.REJECTED.name || issue.status == IssueStatus.RESOLVED.name || issue.status == IssueStatus.ASSIGNED.name) {
@@ -76,7 +81,7 @@ class UserIssueAdapter(
         list.forEach {
             if (it.isSelected && !isResolvedList && it.status == IssueStatus.OPEN.name) {
                 updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.ASSIGNED.name, user, user))
-            } else if (it.isSelected && isResolvedList && it.status == IssueStatus.ASSIGNED.name) {
+            } else if (it.isSelected && isResolvedList && it.status == IssueStatus.ASSIGNED.name && user.id == it.assignee?.id) {
                 updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.RESOLVED.name, null, null))
             }
         }
@@ -91,11 +96,11 @@ class UserIssueAdapter(
     fun changeSelectedState(selectAll: Boolean, isResolvedList: Boolean = false) {
         list.forEach {
             if (isResolvedList) {
-                if (it.status == IssueStatus.ASSIGNED.name ) {
+                if (it.status == IssueStatus.ASSIGNED.name) {
                     it.isSelected = selectAll
                 }
             } else {
-                if (it.status == IssueStatus.OPEN.name ) {
+                if (it.status == IssueStatus.OPEN.name) {
                     it.isSelected = selectAll
                 }
             }
@@ -122,9 +127,15 @@ class UserIssueAdapter(
             if (isAdminView) {
                 val checkBox = itemView.findViewById(R.id.row_checkBox) as CheckBox
                 checkBox.isChecked = issue.isSelected
+                val assignee = itemView.findViewById(R.id.textView_assignee_name) as TextView
+                issue.assignee?.let {
+                    assignee.visibility = View.VISIBLE
+                    assignee.text = "${context.resources.getString(R.string.adapter_assignee)}${it.firstName} ${it.lastName}"
+                }
+
             }
             image.setImageViaGlide(context, "http://95.111.198.176:9001${issue.imageUrl[0]}")
-            area.text = issue.area?.name
+            area.text = issue.area?.name?:"${context.resources.getString(R.string.area_unknown)}"
             description.text = issue.description
             date.text = convertDateToReadableFormat(issue.createdDate)
             status.text = issue.status
@@ -151,6 +162,18 @@ fun ImageView.setImageViaGlide(
     Glide.with(context).load(url).apply(options).into(this)
 }
 
+fun ImageView.setImageViaGlideRoundedCorners(
+    context: Context,
+    url: String,
+    defaultImage: Int = R.drawable.issue_location
+) {
+    val options: RequestOptions = RequestOptions()
+        .placeholder(R.drawable.issue_location)
+        .error(R.drawable.issue_location)
+        .transform(FitCenter(), RoundedCorners(10.dp))
+    Glide.with(context).load(url).apply(options).into(this)
+}
+
 fun ImageView.setImageViaGlide(
     context: Context,
     imageDrawable: Int = R.drawable.logo
@@ -160,3 +183,6 @@ fun ImageView.setImageViaGlide(
         .error(R.drawable.logo).fitCenter()
     Glide.with(context).load(imageDrawable).apply(options).into(this)
 }
+
+val Int.dp: Int
+    get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()

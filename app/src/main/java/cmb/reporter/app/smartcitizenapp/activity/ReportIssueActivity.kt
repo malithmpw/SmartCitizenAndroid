@@ -44,6 +44,8 @@ open class ReportIssueActivity : BaseActivity() {
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private var mLastLocation: Location? = null
     private var descriptionTv: TextView? = null
+    private var directionsTv: TextView? = null
+    private var isDirectionTextViewVisible = false
     private lateinit var progressbar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,18 +60,13 @@ open class ReportIssueActivity : BaseActivity() {
         val reportIssueButton = findViewById<Button>(R.id.button_report_issue)
         retakeImageView.setOnClickListener {
             openCameraToTakeAPicture()
-            reportIssueButton.isEnabled = true
-            reportIssueButton.background =
-                resources.getDrawable(R.drawable.rounded_button)
         }
         descriptionTv = findViewById(R.id.textView_report_issue_description)
+        directionsTv = findViewById(R.id.textView_direction_description)
         openCameraToTakeAPicture()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         reportIssueButton.setOnClickListener {
-            reportIssueButton.isEnabled = false
-            reportIssueButton.background =
-                resources.getDrawable(R.drawable.rounded_button_disabled)
             val area =
                 getArea(areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String))
 
@@ -77,11 +74,19 @@ open class ReportIssueActivity : BaseActivity() {
                 getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String))
 
             val description = descriptionTv?.text.toString()
-            if( description.isEmpty()){
-                reportIssueButton.isEnabled = true
+            if (description.isEmpty()) {
                 Toast.makeText(
                     this@ReportIssueActivity,
-                    "Please a description of the issue",
+                    resources.getString(R.string.please_put_down_a_description),
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+            val directions = directionsTv?.text.toString()
+            if (isDirectionTextViewVisible && directions.isEmpty()) {
+                Toast.makeText(
+                    this@ReportIssueActivity,
+                    resources.getString(R.string.add_direction_to_proceed),
                     Toast.LENGTH_LONG
                 ).show()
                 return@setOnClickListener
@@ -90,10 +95,9 @@ open class ReportIssueActivity : BaseActivity() {
             val status = IssueStatus.OPEN.name
 
             if (encodedImage.isNullOrEmpty()) {
-                reportIssueButton.isEnabled = true
                 Toast.makeText(
                     this@ReportIssueActivity,
-                    "Attach an Image",
+                    resources.getString(R.string.please_attach_an_image),
                     Toast.LENGTH_LONG
                 ).show()
                 return@setOnClickListener
@@ -109,7 +113,8 @@ open class ReportIssueActivity : BaseActivity() {
                     description = description,
                     lat = latitude!!,
                     lon = longitude!!,
-                    status = status
+                    status = status,
+                    directions = directions
                 )
                 val call = apiService.addIssue(
                     issue = issue
@@ -122,18 +127,15 @@ open class ReportIssueActivity : BaseActivity() {
                         if (response.isSuccessful) {
                             Toast.makeText(
                                 this@ReportIssueActivity,
-                                "Reporting is Successful",
+                                resources.getString(R.string.reporting_is_successful),
                                 Toast.LENGTH_LONG
                             ).show()
                             onBackPressed()
                         } else {
                             progressbar.visibility = View.GONE
-                            reportIssueButton.isEnabled = true
-                            reportIssueButton.background =
-                                resources.getDrawable(R.drawable.rounded_button)
                             Toast.makeText(
                                 this@ReportIssueActivity,
-                                "Error Occurred, Try again",
+                                resources.getString(R.string.error_occurred_try_again),
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -141,12 +143,9 @@ open class ReportIssueActivity : BaseActivity() {
 
                     override fun onFailure(call: Call<IssueResponse>, t: Throwable) {
                         progressbar.visibility = View.GONE
-                        reportIssueButton.isEnabled = true
-                        reportIssueButton.background =
-                            resources.getDrawable(R.drawable.rounded_button)
                         Toast.makeText(
                             this@ReportIssueActivity,
-                            "Error Occurred, Try again Later",
+                            resources.getString(R.string.error_occurred_try_again),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -155,14 +154,13 @@ open class ReportIssueActivity : BaseActivity() {
             } else {
                 Toast.makeText(
                     this@ReportIssueActivity,
-                    "Location data not found",
+                    resources.getString(R.string.location_data_not_found),
                     Toast.LENGTH_LONG
                 ).show()
             }
 
         }
     }
-
 
 
     private fun initSpinners() {
@@ -247,6 +245,8 @@ open class ReportIssueActivity : BaseActivity() {
                     }
 
                 } else {
+                    directionsTv?.visibility = View.VISIBLE
+                    isDirectionTextViewVisible = true
                     Toast.makeText(
                         this@ReportIssueActivity,
                         getString(R.string.no_location_detected),
@@ -313,7 +313,7 @@ open class ReportIssueActivity : BaseActivity() {
         val width = bitmap.width
         val height = bitmap.height
         val newWidth = 1000
-        val newHeight = height*newWidth/width
+        val newHeight = height * newWidth / width
         val resized = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
         resized.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val imageBytes: ByteArray = byteArrayOutputStream.toByteArray()

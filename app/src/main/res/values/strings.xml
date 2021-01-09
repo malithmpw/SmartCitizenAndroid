@@ -22,7 +22,7 @@
     <string name="report_new_issue">Report new issue</string>
     <string name="description">Description</string>
     <string name="report">Report</string>
-    <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
+    <string name="no_location_detected">No location detected. Please add Directions to the location.</string>
     <string name="user_name_or_password_incorrect">Phone Number or Password Incorrect!</string>
     <string name="filter">Filter</string>
     <string name="ok">OK</string>
@@ -47,38 +47,38 @@
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
     <string name="resolve">Resolve</string>
+    <string name="new_password_does_not_match_confirm_password">New password does not match with Confirm password</string>
+    <string name="password_cant_be_empty">Password can\'t be empty</string>
+    <string name="invalid_phone_number">Invalid Phone Number</string>
+    <string name="password_updated_successfully">Password updated Successfully</string>
+    <string name="please_put_down_a_description">Please put down a description</string>
+    <string name="phone_number_or_password_incorrect">Phone Number or password incorrect</string>
+    <string name="please_attach_an_image">Please Attach an Image</string>
+    <string name="otp_sent_to_ur_number">OTP sent to your Number</string>
+    <string name="number_verification_failed_try_again">Phone Number Verification Failed, try again later</string>
+    <string name="reporting_is_successful">Reporting is Successful</string>
+    <string name="error_occurred_try_again">Error Occurred, Try again</string>
+    <string name="location_data_not_found">Location data not found</string>
+    <string name="all_reported_issues">All Reported issues</string>
+    <string name="welcome_name">Welcome </string>
+    <string name="mark_as_resolved">Resolve Issue</string>
+    <string name="mark_as_rejected">Reject Issue</string>
+    <string name="mark_as_resolved_successfully">Resolved Successfully</string>
+    <string name="mark_as_rejected_successfully">Rejected Successfully</string>
+    <string name="go_to_location">Go to location</string>
+    <string name="failed_to_resolve_try_again">Failed To Resolve, Try again</string>
+    <string name="failed_to_reject_try_again">Failed To Reject, Try again</string>
+    <string name="adapter_assignee">Assignee: </string>
+    <string name="area_unknown">Area Unknown</string>
+    <string name="department_unknown">Authority Unknown</string>
+    <string name="permissions_not_granted">Permissions not Granted</string>
+    <string name="directions">Directions</string>
+    <string name="add_direction_to_proceed">Please add Directions to Proceed</string>
 
     <string-array name="languages">
         <item>Select Language</item>
         <item>සිංහල</item>
         <item>தமிழ்</item>
         <item>English</item>
-    </string-array>
-
-    <string-array name="areas">
-        <item>Select Area</item>
-        <item>Colombo 1</item>
-        <item>Colombo 2</item>
-        <item>Colombo 3</item>
-        <item>Colombo 4</item>
-        <item>Colombo 5</item>
-        <item>Colombo 6</item>
-        <item>Colombo 7</item>
-        <item>Colombo 8</item>
-        <item>Colombo 9</item>
-        <item>Colombo 10</item>
-        <item>Colombo 11</item>
-        <item>Colombo 12</item>
-        <item>Colombo 13</item>
-        <item>Colombo 14</item>
-        <item>Colombo 15</item>
-    </string-array>
-
-
-    <string-array name="departments">
-        <item>Select Department</item>
-        <item>RDA</item>
-        <item>Water</item>
-        <item>Electricity</item>
     </string-array>
 </resources>
