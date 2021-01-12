@@ -5,6 +5,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface SmartCityEndpoints {
     @POST("user/login")
@@ -30,5 +31,8 @@ interface SmartCityEndpoints {
 
     @POST("issue/update/details")
     fun updateIssues(@Body issueUpdateList: List<IssueUpdate>): Call<List<IssueResponse>>
+
+    @GET("user/check")
+    fun isRegisteredUser(@Query("isRegisteredUser") isRegisteredUser:String): Call<Boolean>
 
 }

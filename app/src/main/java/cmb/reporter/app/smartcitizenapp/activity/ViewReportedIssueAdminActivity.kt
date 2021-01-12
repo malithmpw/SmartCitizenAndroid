@@ -15,7 +15,6 @@ import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdapter
 import cmb.reporter.app.smartcitizenapp.adapter.UserIssueAdapter
 import cmb.reporter.app.smartcitizenapp.models.*
 import cmb.reporter.app.smartcitizenapp.models.Filter
-import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import retrofit2.Call
@@ -33,8 +32,8 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     private var pageCount: Int? = 1
     private var isSelectAllSelected = false
     private var isSelectAllButtonClicked = false
-    private lateinit var selectAllButton:Button
-    private var pageType:String? = null
+    private lateinit var selectAllButton: Button
+    private var pageType: String? = null
 
     private lateinit var filterBottomSheet: BottomSheetDialog
 
@@ -63,7 +62,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             }
         }
         val assignToMeOrAdmin = findViewById<Button>(R.id.assign_to_admin)
-        if (!pageType.isNullOrEmpty()){
+        if (!pageType.isNullOrEmpty()) {
             assignToMeOrAdmin.setText(R.string.resolve)
         }
         assignToMeOrAdmin.setOnClickListener {
@@ -72,7 +71,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
                 val selectedIssues = adapter.getSelectedItems(!pageType.isNullOrEmpty())
                 updateAssignToMe(selectedIssues, !pageType.isNullOrEmpty())
             } else if (user.role.name == "SUPERADMIN") {
-
+//TODO super admin flow
             }
         }
 
@@ -82,7 +81,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         initAdapter(this, rv)
         appliedFilter =
             Filter(startDate = c2.getFormattedDateString(), endDate = c1.getFormattedDateString())
-        if (!pageType.isNullOrEmpty()){
+        if (!pageType.isNullOrEmpty()) {
             appliedFilter.status = IssueStatus.ASSIGNED.name
         }
 
@@ -90,13 +89,17 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
 
     override fun onResume() {
         super.onResume()
-        requestDataFromServer(
-            currentPageNo,
-            appliedFilter
-        )
+        if (AppData.isActionPerformedOnIssueDetailsPage()) {
+            requestFilteredDataFromServer(appliedFilter)
+        } else {
+            requestDataFromServer(
+                currentPageNo,
+                appliedFilter
+            )
+        }
     }
 
-    private fun updateAssignToMe(list: List<IssueUpdate>, isResolvePage:Boolean = false) {
+    private fun updateAssignToMe(list: List<IssueUpdate>, isResolvePage: Boolean = false) {
         val call = apiService.updateIssues(list)
         call.enqueue(object : Callback<List<IssueResponse>> {
             override fun onResponse(
@@ -151,13 +154,15 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         endDate: String,
         area: Area?,
         category: Category?,
-        status: String?
+        status: String?,
+        allIssue: Boolean
     ): IssueRequest {
         val issue = IssueRequest(
             userId = userId,
             startDate = startDate,
             endDate = endDate,
-            pageNo = pageNo
+            pageNo = pageNo,
+            allIssue = allIssue
         )
         if (area != null) {
             issue.areaId = area.id
@@ -180,16 +185,18 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             getCategory(categoryName = filter.department?.name)
         val status =
             getStatus(status = filter.status)
-        val userId = sharePrefUtil.getUser().id
+        val user = sharePrefUtil.getUser()
+
         progressbar.visibility = View.VISIBLE
         val issue = getIssue(
             pageNo = pageNo,
-            userId = userId,
+            userId = user.id,
             startDate = startDate,
             endDate = endDate,
             area = area,
             category = department,
-            status = status
+            status = status,
+            allIssue = pageType.isNullOrEmpty()
         )
         val call = apiService.getIssues(
             issueRequest = issue

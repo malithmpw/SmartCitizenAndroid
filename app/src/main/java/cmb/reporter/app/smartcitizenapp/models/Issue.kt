@@ -7,8 +7,8 @@ data class Issue(
     val area: Area?,
     val imageToSave: List<String>,
     val status: String,
-    val lat: Double,
-    val lon: Double,
+    val lat: Double?,
+    val lon: Double?,
     val directions:String? = null
 )
 

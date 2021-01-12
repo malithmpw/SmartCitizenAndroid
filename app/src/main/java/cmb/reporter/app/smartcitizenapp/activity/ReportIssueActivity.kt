@@ -103,7 +103,7 @@ open class ReportIssueActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-            if (latitude != null && longitude != null) {
+            if ((latitude != null && longitude != null) || directions.isNotEmpty()) {
                 progressbar.visibility = View.VISIBLE
                 val issue = Issue(
                     user = sharePrefUtil.getUser(),
@@ -111,8 +111,8 @@ open class ReportIssueActivity : BaseActivity() {
                     area = area,
                     imageToSave = listOf(encodedImage!!),
                     description = description,
-                    lat = latitude!!,
-                    lon = longitude!!,
+                    lat = latitude,
+                    lon = longitude,
                     status = status,
                     directions = directions
                 )

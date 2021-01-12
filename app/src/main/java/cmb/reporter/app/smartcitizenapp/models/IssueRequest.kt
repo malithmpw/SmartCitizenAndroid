@@ -7,5 +7,6 @@ data class IssueRequest(
     val endDate: String,
     var status: String? = null,
     var areaId: Int? = null,
-    var categoryId: Int? = null
+    var categoryId: Int? = null,
+    var allIssue:Boolean = true
 )

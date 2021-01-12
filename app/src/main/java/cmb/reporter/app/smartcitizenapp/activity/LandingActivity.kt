@@ -42,7 +42,7 @@ class LandingActivity : BaseActivity() {
 
         val user: User = sharePrefUtil.getUser()
         userRole = user.role.name
-        welcomeUserName.text = "${resources.getString(R.string.welcome_name)}${user.firstName}"
+        welcomeUserName.text = "${resources.getString(R.string.welcome_name)} ${user.firstName}"
         when (userRole) {
             "USER" -> {
                 welcomeDescription.text = resources.getString(R.string.landing_page_message_user)

@@ -9,6 +9,7 @@ object AppData {
     private var areaList: List<Area>? = null
     private var categoryList: List<Category>? = null
     private var selectedIssue: IssueResponse? = null
+    private var clickedOnRejectOrResolveButton:Boolean = false
 
     const val selectArea = "Select Area"
     const val selectDepartment = "Select Department"
@@ -29,7 +30,13 @@ object AppData {
         selectedIssue = issueResponse
     }
 
-    fun getStatus(isResolvedList:Boolean) = if (!isResolvedList) listOf(selectStatus, "OPEN", "ASSIGNED", "RESOLVED", "REJECTED") else  listOf(selectStatus, "ASSIGNED", "RESOLVED")
+    fun getStatus(isResolvedList:Boolean) = if (!isResolvedList) listOf(selectStatus, "OPEN", "ASSIGNED", "RESOLVED", "REJECTED") else  listOf("ASSIGNED", "RESOLVED")
+
+    fun markedAsActionPerformedOnIssueDetailsPage(actionPerformed:Boolean){
+        clickedOnRejectOrResolveButton = actionPerformed
+    }
+
+    fun isActionPerformedOnIssueDetailsPage() = clickedOnRejectOrResolveButton
 }
 
 fun getArea(areaName: String?): Area? {

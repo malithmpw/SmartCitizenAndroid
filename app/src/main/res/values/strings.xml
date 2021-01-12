@@ -74,6 +74,16 @@
     <string name="permissions_not_granted">Permissions not Granted</string>
     <string name="directions">Directions</string>
     <string name="add_direction_to_proceed">Please add Directions to Proceed</string>
+    <string name="issue_description">Issue description</string>
+    <string name="resolve_message">Resolve message</string>
+    <string name="directions_tv">Directions:</string>
+    <string name="description_tv">Description:</string>
+    <string name="address_to">Address To:</string>
+    <string name="area_tv">Area:</string>
+    <string name="status_tv">Status:</string>
+    <string name="issue_id_tv">Issue Id:</string>
+    <string name="resolution">Issue Resolution</string>
+    <string name="resolution_label">Resolution:</string>
 
     <string-array name="languages">
         <item>Select Language</item>

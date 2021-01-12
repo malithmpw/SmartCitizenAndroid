@@ -8,10 +8,7 @@ import android.widget.*
 import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.R
 import cmb.reporter.app.smartcitizenapp.adapter.setImageViaGlideRoundedCorners
-import cmb.reporter.app.smartcitizenapp.models.IssueResponse
-import cmb.reporter.app.smartcitizenapp.models.IssueStatus
-import cmb.reporter.app.smartcitizenapp.models.IssueUpdate
-import cmb.reporter.app.smartcitizenapp.models.User
+import cmb.reporter.app.smartcitizenapp.models.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,13 +32,23 @@ class IssueDetailsActivity : BaseActivity() {
             val markAsResolvedButton = findViewById<Button>(R.id.marked_as_resolved)
             val markAsRejectedButton = findViewById<Button>(R.id.marked_as_rejected)
             val buttonLayout = findViewById<LinearLayout>(R.id.button_layout_issue_details)
+            val issueResolveMessage = findViewById<EditText>(R.id.issue_resolve_message)
 
             val directionLabel = findViewById<TextView>(R.id.textView_direction_label)
             val directionValue = findViewById<TextView>(R.id.textView_directions_value)
+
+            val resolutionLabel = findViewById<TextView>(R.id.textView_resolution_label)
+            val resolutionValue = findViewById<TextView>(R.id.textView_resolution_value)
+
             if (!issue.directions.isNullOrEmpty()) {
                 directionLabel.visibility = View.VISIBLE
                 directionValue.visibility = View.VISIBLE
                 directionValue.text = issue.directions
+            }
+            if (!issue.resolution.isNullOrEmpty()) {
+                resolutionLabel.visibility = View.VISIBLE
+                resolutionValue.visibility = View.VISIBLE
+                resolutionValue.text = issue.resolution
             }
 
             if (issue.imageUrl.isNotEmpty()) {
@@ -75,14 +82,18 @@ class IssueDetailsActivity : BaseActivity() {
             if (user.role.name == "ADMIN" && issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id) {
                 buttonLayout.visibility = View.VISIBLE
                 markAsResolvedButton.setOnClickListener {
+                    val resolutionMessage = issueResolveMessage.text.toString()
                     val list = mutableListOf<IssueUpdate>()
-                    list.add(IssueUpdate(issue.id.toLong(), IssueStatus.RESOLVED.name, null, null))
+                    list.add(IssueUpdate(issue.id.toLong(), IssueStatus.RESOLVED.name, null, null, resolutionMessage))
                     markedAsResolvedOrRejected(list)
+                    AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                 }
                 markAsRejectedButton.setOnClickListener {
+                    val resolutionMessage = issueResolveMessage.text.toString()
                     val list = mutableListOf<IssueUpdate>()
-                    list.add(IssueUpdate(issue.id.toLong(), IssueStatus.REJECTED.name, null, null))
+                    list.add(IssueUpdate(issue.id.toLong(), IssueStatus.REJECTED.name, null, null, resolutionMessage))
                     markedAsResolvedOrRejected(list, true)
+                    AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                 }
             }
 

@@ -80,9 +80,9 @@ class UserIssueAdapter(
         val updateList = mutableListOf<IssueUpdate>()
         list.forEach {
             if (it.isSelected && !isResolvedList && it.status == IssueStatus.OPEN.name) {
-                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.ASSIGNED.name, user, user))
+                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.ASSIGNED.name, user, user, null))
             } else if (it.isSelected && isResolvedList && it.status == IssueStatus.ASSIGNED.name && user.id == it.assignee?.id) {
-                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.RESOLVED.name, null, null))
+                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.RESOLVED.name, null, null, "Bulk Resolved"))
             }
         }
         return updateList
