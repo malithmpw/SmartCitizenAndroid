@@ -185,7 +185,7 @@ class LandingActivity : BaseActivity() {
                     areas?.let {
                         val areas = it.toMutableList()
                         areas.add(0, Area(-1, AppData.selectArea))
-                        AppData.setAreas(areas)
+                        AppData.setAreas(areas, sharePrefUtil)
                     }
                 }
             }
@@ -205,7 +205,7 @@ class LandingActivity : BaseActivity() {
                     categories?.let {
                         val categories = it.toMutableList()
                         categories.add(0, Category(-1, AppData.selectDepartment, ""))
-                        AppData.setCategories(categories)
+                        AppData.setCategories(categories, sharePrefUtil)
                     }
                 }
             }

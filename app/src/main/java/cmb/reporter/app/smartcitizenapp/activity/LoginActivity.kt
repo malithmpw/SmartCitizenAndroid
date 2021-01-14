@@ -9,10 +9,7 @@ import cmb.reporter.app.smartcitizenapp.R
 import cmb.reporter.app.smartcitizenapp.models.LoginRequest
 import cmb.reporter.app.smartcitizenapp.models.LoginResponse
 import cmb.reporter.app.smartcitizenapp.security.EncryptUtil
-import cmb.reporter.app.smartcitizenapp.sharedPref.EN
-import cmb.reporter.app.smartcitizenapp.sharedPref.LANGUAGE
-import cmb.reporter.app.smartcitizenapp.sharedPref.SI
-import cmb.reporter.app.smartcitizenapp.sharedPref.TA
+import cmb.reporter.app.smartcitizenapp.sharedPref.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -88,6 +85,7 @@ class LoginActivity : BaseActivity() {
                 if (response.isSuccessful) {
                     val user = response.body()
                     user?.let {
+                        sharePrefUtil.putStringValue(USER_PASSWORD, password)
                         sharePrefUtil.saveUser(user)
                         finish()
                         startActivity(Intent(context, LandingActivity::class.java))

@@ -180,9 +180,9 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     private fun requestDataFromServer(pageNo: Int, filter: Filter) {
         val startDate: String = filter.startDate
         val endDate: String = filter.endDate
-        val area = getArea(areaName = filter.area?.name)
+        val area = getArea(areaName = filter.area?.name, sharePrefUtil)
         val department =
-            getCategory(categoryName = filter.department?.name)
+            getCategory(categoryName = filter.department?.name, sharePrefUtil)
         val status =
             getStatus(status = filter.status)
         val user = sharePrefUtil.getUser()
@@ -268,13 +268,13 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         val eDate2 = c2.get(Calendar.DAY_OF_MONTH)
         etFromDate.setText("${eYear2}/" + "${eMonth2 + 1}".toTwoDigitNumber() + "/" + "$eDate2".toTwoDigitNumber())
         val areaAdapter =
-            SmartCitizenSpinnerAdapter(context, AppData.getAreas().map { it.name })
+            SmartCitizenSpinnerAdapter(context, AppData.getAreas(sharePrefUtil).map { it.name })
         areaSpinner?.let {
             it.adapter = areaAdapter
         }
 
         val categoryAdapter =
-            SmartCitizenSpinnerAdapter(context, AppData.getCategory().map { it.name })
+            SmartCitizenSpinnerAdapter(context, AppData.getCategory(sharePrefUtil).map { it.name })
         categorySpinner?.let {
             it.adapter = categoryAdapter
         }
@@ -288,9 +288,9 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         view.findViewById<Button>(R.id.filter_issue_button).setOnClickListener {
             dialog.dismiss()
             val area =
-                getArea(areaName = areaSpinner.selectedItem as String)
+                getArea(areaName = areaSpinner.selectedItem as String, sharePrefUtil)
             val department =
-                getCategory(categoryName = categorySpinner.selectedItem as String)
+                getCategory(categoryName = categorySpinner.selectedItem as String, sharePrefUtil)
             val status =
                 getStatus(status = statusSpinner.selectedItem as String)
             val f = Filter(

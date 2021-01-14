@@ -12,6 +12,7 @@ import cmb.reporter.app.smartcitizenapp.models.RegisterUser
 import cmb.reporter.app.smartcitizenapp.models.Role
 import cmb.reporter.app.smartcitizenapp.security.EncryptUtil
 import cmb.reporter.app.smartcitizenapp.sharedPref.PHONE_NUMBER
+import cmb.reporter.app.smartcitizenapp.sharedPref.USER_PASSWORD
 import com.google.firebase.auth.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -94,6 +95,7 @@ class RegisterActivity : BaseActivity() {
             override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
                 progressbar.visibility = View.GONE
                 if (response.isSuccessful) {
+                    sharePrefUtil.putStringValue(USER_PASSWORD, registerUser.password)
                     finish()
                     startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
                 } else {

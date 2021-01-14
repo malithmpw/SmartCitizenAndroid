@@ -8,6 +8,7 @@ import cmb.reporter.app.smartcitizenapp.models.ChangePassword
 import cmb.reporter.app.smartcitizenapp.models.LoginResponse
 import cmb.reporter.app.smartcitizenapp.models.RegisterUser
 import cmb.reporter.app.smartcitizenapp.security.EncryptUtil
+import cmb.reporter.app.smartcitizenapp.sharedPref.USER_PASSWORD
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,6 +39,17 @@ class ChangePasswordActivity : BaseActivity() {
             val oldpass = etOldPassword.text.toString()
             val newpass = etNewPassword.text.toString()
             val confirmNewPass = etConfirmNewPassword.text.toString()
+            val x = EncryptUtil.encryptPassword(oldpass)
+            val y = sharePrefUtil.getStringValue(USER_PASSWORD)
+
+            if (x != y) {
+                Toast.makeText(
+                    this@ChangePasswordActivity,
+                    "Old password is wrong",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
 
             if (!newpass.isNullOrEmpty() && !confirmNewPass.isNullOrEmpty() && !oldpass.isNullOrEmpty()) {
                 if (newpass == confirmNewPass) {
@@ -77,6 +89,7 @@ class ChangePasswordActivity : BaseActivity() {
             override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
                 if (response.isSuccessful) {
                     val user = response.body()
+                    sharePrefUtil.putStringValue(USER_PASSWORD, newPassword)
                     user?.let {
                         sharePrefUtil.saveUser(
                             LoginResponse(

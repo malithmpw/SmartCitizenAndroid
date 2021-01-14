@@ -19,7 +19,6 @@ import cmb.reporter.app.smartcitizenapp.models.IssueStatus
 import cmb.reporter.app.smartcitizenapp.models.IssueUpdate
 import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -80,9 +79,25 @@ class UserIssueAdapter(
         val updateList = mutableListOf<IssueUpdate>()
         list.forEach {
             if (it.isSelected && !isResolvedList && it.status == IssueStatus.OPEN.name) {
-                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.ASSIGNED.name, user, user, null))
+                updateList.add(
+                    IssueUpdate(
+                        it.id.toLong(),
+                        IssueStatus.ASSIGNED.name,
+                        user,
+                        user,
+                        null
+                    )
+                )
             } else if (it.isSelected && isResolvedList && it.status == IssueStatus.ASSIGNED.name && user.id == it.assignee?.id) {
-                updateList.add(IssueUpdate(it.id.toLong(), IssueStatus.RESOLVED.name, null, null, "Bulk Resolved"))
+                updateList.add(
+                    IssueUpdate(
+                        it.id.toLong(),
+                        IssueStatus.RESOLVED.name,
+                        null,
+                        null,
+                        "Bulk Resolved"
+                    )
+                )
             }
         }
         return updateList
@@ -130,12 +145,13 @@ class UserIssueAdapter(
                 val assignee = itemView.findViewById(R.id.textView_assignee_name) as TextView
                 issue.assignee?.let {
                     assignee.visibility = View.VISIBLE
-                    assignee.text = "${context.resources.getString(R.string.adapter_assignee)}${it.firstName} ${it.lastName}"
+                    assignee.text =
+                        "${context.resources.getString(R.string.adapter_assignee)}${it.firstName} ${it.lastName}"
                 }
 
             }
             image.setImageViaGlide(context, "http://95.111.198.176:9001${issue.imageUrl[0]}")
-            area.text = issue.area?.name?:"${context.resources.getString(R.string.area_unknown)}"
+            area.text = issue.area?.name ?: "${context.resources.getString(R.string.area_unknown)}"
             description.text = issue.description
             date.text = convertDateToReadableFormat(issue.createdDate)
             status.text = issue.status

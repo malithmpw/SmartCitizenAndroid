@@ -79,28 +79,41 @@ class IssueDetailsActivity : BaseActivity() {
                 issue.category?.name ?: resources.getString(R.string.department_unknown)
             issueDesc.text = issue.description
 
-            if (user.role.name == "ADMIN" && issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id) {
+            if (user.role.name == "ADMIN") {
                 buttonLayout.visibility = View.VISIBLE
-                markAsResolvedButton.setOnClickListener {
-                    val resolutionMessage = issueResolveMessage.text.toString()
-                    val list = mutableListOf<IssueUpdate>()
-                    list.add(IssueUpdate(issue.id.toLong(), IssueStatus.RESOLVED.name, null, null, resolutionMessage))
-                    markedAsResolvedOrRejected(list)
-                    AppData.markedAsActionPerformedOnIssueDetailsPage(true)
-                }
-                markAsRejectedButton.setOnClickListener {
-                    val resolutionMessage = issueResolveMessage.text.toString()
-                    val list = mutableListOf<IssueUpdate>()
-                    list.add(IssueUpdate(issue.id.toLong(), IssueStatus.REJECTED.name, null, null, resolutionMessage))
-                    markedAsResolvedOrRejected(list, true)
-                    AppData.markedAsActionPerformedOnIssueDetailsPage(true)
+
+                if (issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id){
+                    markAsResolvedButton.setOnClickListener {
+                        val resolutionMessage = issueResolveMessage.text.toString()
+                        val list = mutableListOf<IssueUpdate>()
+                        list.add(IssueUpdate(issue.id.toLong(), IssueStatus.RESOLVED.name, null, null, resolutionMessage))
+                        updateIssueDetails(list)
+                        AppData.markedAsActionPerformedOnIssueDetailsPage(true)
+                    }
+                    markAsRejectedButton.setOnClickListener {
+                        val resolutionMessage = issueResolveMessage.text.toString()
+                        val list = mutableListOf<IssueUpdate>()
+                        list.add(IssueUpdate(issue.id.toLong(), IssueStatus.REJECTED.name, null, null, resolutionMessage))
+                        updateIssueDetails(list, true)
+                        AppData.markedAsActionPerformedOnIssueDetailsPage(true)
+                    }
+                }else if (issue.status == IssueStatus.OPEN.name){
+                    markAsResolvedButton.text = resources.getString(R.string.assign_to_me)
+                    issueResolveMessage.visibility = View.INVISIBLE
+                    markAsResolvedButton.setOnClickListener {
+                        val list = mutableListOf<IssueUpdate>()
+                        list.add(IssueUpdate(issue.id.toLong(), IssueStatus.ASSIGNED.name, null, null, null))
+                        updateIssueDetails(list)
+                        AppData.markedAsActionPerformedOnIssueDetailsPage(true)
+                    }
+                    markAsRejectedButton.visibility = View.INVISIBLE
                 }
             }
 
         }
     }
 
-    private fun markedAsResolvedOrRejected(list: List<IssueUpdate>, isRejected: Boolean = false) {
+    private fun updateIssueDetails(list: List<IssueUpdate>, isRejected: Boolean = false) {
         val call = apiService.updateIssues(list)
         call.enqueue(object : Callback<List<IssueResponse>> {
             override fun onResponse(

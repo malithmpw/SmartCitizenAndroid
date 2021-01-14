@@ -68,10 +68,10 @@ open class ReportIssueActivity : BaseActivity() {
 
         reportIssueButton.setOnClickListener {
             val area =
-                getArea(areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String))
+                getArea(areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String), sharePrefUtil)
 
             val category =
-                getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String))
+                getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String), sharePrefUtil)
 
             val description = descriptionTv?.text.toString()
             if (description.isEmpty()) {
@@ -105,6 +105,8 @@ open class ReportIssueActivity : BaseActivity() {
 
             if ((latitude != null && longitude != null) || directions.isNotEmpty()) {
                 progressbar.visibility = View.VISIBLE
+                reportIssueButton.isClickable = false
+                reportIssueButton.isEnabled = false
                 val issue = Issue(
                     user = sharePrefUtil.getUser(),
                     category = category,
@@ -132,6 +134,8 @@ open class ReportIssueActivity : BaseActivity() {
                             ).show()
                             onBackPressed()
                         } else {
+                            reportIssueButton.isClickable = true
+                            reportIssueButton.isEnabled = true
                             progressbar.visibility = View.GONE
                             Toast.makeText(
                                 this@ReportIssueActivity,
@@ -148,6 +152,8 @@ open class ReportIssueActivity : BaseActivity() {
                             resources.getString(R.string.error_occurred_try_again),
                             Toast.LENGTH_LONG
                         ).show()
+                        reportIssueButton.isClickable = true
+                        reportIssueButton.isEnabled = true
                     }
                 })
 
@@ -164,13 +170,13 @@ open class ReportIssueActivity : BaseActivity() {
 
 
     private fun initSpinners() {
-        val areaAdapter = SmartCitizenSpinnerAdapter(this, AppData.getAreas().map { it.name })
+        val areaAdapter = SmartCitizenSpinnerAdapter(this, AppData.getAreas(sharePrefUtil).map { it.name })
         areaSpinner?.let {
             it.adapter = areaAdapter
         }
 
         val categoryAdapter =
-            SmartCitizenSpinnerAdapter(this, AppData.getCategory().map { it.name })
+            SmartCitizenSpinnerAdapter(this, AppData.getCategory(sharePrefUtil).map { it.name })
         categorySpinner?.let {
             it.adapter = categoryAdapter
         }

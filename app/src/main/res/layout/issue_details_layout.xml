@@ -21,18 +21,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/imageView_issue_image"
+            <LinearLayout
+                android:id="@+id/imageView_issue_image_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_boarder"
+                android:layout_marginEnd="16dp" android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/issue_location" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView_issue_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/issue_id"
@@ -43,7 +48,7 @@
                 android:text="@string/issue_id_tv"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView_issue_image" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView_issue_image_wrapper" />
 
             <TextView
                 android:id="@+id/textView_issue_id_value"
@@ -196,7 +201,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView_issue_image"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_issue_image_wrapper"
                 app:srcCompat="@drawable/map_icon" />
 
             <TextView
