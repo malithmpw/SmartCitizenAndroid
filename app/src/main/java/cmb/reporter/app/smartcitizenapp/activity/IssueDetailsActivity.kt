@@ -64,7 +64,7 @@ class IssueDetailsActivity : BaseActivity() {
                         Uri.parse("https://www.google.com/maps/@${issue.lat},${issue.lon},10z")
                     )
                     startActivity(intent)
-                }else{
+                } else {
                     Toast.makeText(
                         this@IssueDetailsActivity,
                         resources.getString(R.string.location_data_not_found),
@@ -82,27 +82,51 @@ class IssueDetailsActivity : BaseActivity() {
             if (user.role.name == "ADMIN") {
                 buttonLayout.visibility = View.VISIBLE
 
-                if (issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id){
+                if (issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id) {
                     markAsResolvedButton.setOnClickListener {
                         val resolutionMessage = issueResolveMessage.text.toString()
                         val list = mutableListOf<IssueUpdate>()
-                        list.add(IssueUpdate(issue.id.toLong(), IssueStatus.RESOLVED.name, null, null, resolutionMessage))
-                        updateIssueDetails(list)
+                        list.add(
+                            IssueUpdate(
+                                issue.id.toLong(),
+                                IssueStatus.RESOLVED.name,
+                                null,
+                                null,
+                                resolutionMessage
+                            )
+                        )
+                        updateIssueDetails(list, status = IssueStatus.RESOLVED)
                         AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                     }
                     markAsRejectedButton.setOnClickListener {
                         val resolutionMessage = issueResolveMessage.text.toString()
                         val list = mutableListOf<IssueUpdate>()
-                        list.add(IssueUpdate(issue.id.toLong(), IssueStatus.REJECTED.name, null, null, resolutionMessage))
-                        updateIssueDetails(list, true)
+                        list.add(
+                            IssueUpdate(
+                                issue.id.toLong(),
+                                IssueStatus.REJECTED.name,
+                                null,
+                                null,
+                                resolutionMessage
+                            )
+                        )
+                        updateIssueDetails(list, true, status = IssueStatus.REJECTED)
                         AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                     }
-                }else if (issue.status == IssueStatus.OPEN.name){
+                } else if (issue.status == IssueStatus.OPEN.name) {
                     markAsResolvedButton.text = resources.getString(R.string.assign_to_me)
                     issueResolveMessage.visibility = View.INVISIBLE
                     markAsResolvedButton.setOnClickListener {
                         val list = mutableListOf<IssueUpdate>()
-                        list.add(IssueUpdate(issue.id.toLong(), IssueStatus.ASSIGNED.name, null, null, null))
+                        list.add(
+                            IssueUpdate(
+                                issue.id.toLong(),
+                                IssueStatus.ASSIGNED.name,
+                                null,
+                                null,
+                                null
+                            )
+                        )
                         updateIssueDetails(list)
                         AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                     }
@@ -113,7 +137,11 @@ class IssueDetailsActivity : BaseActivity() {
         }
     }
 
-    private fun updateIssueDetails(list: List<IssueUpdate>, isRejected: Boolean = false) {
+    private fun updateIssueDetails(
+        list: List<IssueUpdate>,
+        isRejected: Boolean = false,
+        status: IssueStatus = IssueStatus.ASSIGNED
+    ) {
         val call = apiService.updateIssues(list)
         call.enqueue(object : Callback<List<IssueResponse>> {
             override fun onResponse(
@@ -121,21 +149,37 @@ class IssueDetailsActivity : BaseActivity() {
                 response: Response<List<IssueResponse>>
             ) {
                 if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@IssueDetailsActivity,
-                        resources.getString(if (isRejected) R.string.mark_as_rejected_successfully else R.string.mark_as_resolved_successfully),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    if (status == IssueStatus.ASSIGNED) {
+                        Toast.makeText(
+                            this@IssueDetailsActivity,
+                            resources.getString(R.string.assigned_successfully),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            this@IssueDetailsActivity,
+                            resources.getString(if (isRejected) R.string.mark_as_rejected_successfully else R.string.mark_as_resolved_successfully),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                     finish()
                 }
             }
 
             override fun onFailure(call: Call<List<IssueResponse>>, t: Throwable) {
-                Toast.makeText(
-                    this@IssueDetailsActivity,
-                    resources.getString(if (isRejected) R.string.failed_to_reject_try_again else R.string.failed_to_resolve_try_again),
-                    Toast.LENGTH_LONG
-                ).show()
+                if (status == IssueStatus.ASSIGNED) {
+                    Toast.makeText(
+                        this@IssueDetailsActivity,
+                        resources.getString(R.string.failed_to_assign_try_again),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        this@IssueDetailsActivity,
+                        resources.getString(if (isRejected) R.string.failed_to_reject_try_again else R.string.failed_to_resolve_try_again),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
 
         })

@@ -68,6 +68,7 @@
     <string name="go_to_location">Go to location</string>
     <string name="failed_to_resolve_try_again">Failed To Resolve, Try again</string>
     <string name="failed_to_reject_try_again">Failed To Reject, Try again</string>
+    <string name="failed_to_assign_try_again">Failed To Assign, Try again</string>
     <string name="adapter_assignee">Assignee: </string>
     <string name="area_unknown">Area Unknown</string>
     <string name="department_unknown">Authority Unknown</string>
@@ -84,6 +85,7 @@
     <string name="issue_id_tv">Issue Id:</string>
     <string name="resolution">Issue Resolution</string>
     <string name="resolution_label">Resolution:</string>
+    <string name="assigned_successfully">Assigned Successfully</string>
 
     <string-array name="languages">
         <item>Select Language</item>
