@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp" android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,27 @@
                 android:textStyle="italic"
                 app:layout_constraintStart_toEndOf="@+id/issue_id"
                 app:layout_constraintTop_toTopOf="@+id/issue_id" />
+            <TextView
+                android:id="@+id/textView_issue_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="2020/12/12"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/textView6r"
+                app:layout_constraintStart_toEndOf="@+id/textView6r" />
 
+            <TextView
+                android:id="@+id/textView6r"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/created_on"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/issue_id" />
             <TextView
                 android:id="@+id/textView_issue_status_value"
                 android:layout_width="wrap_content"
@@ -80,7 +100,7 @@
                 android:text="@string/status_tv"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/issue_id" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_issue_date" />
 
             <TextView
                 android:id="@+id/textView7"

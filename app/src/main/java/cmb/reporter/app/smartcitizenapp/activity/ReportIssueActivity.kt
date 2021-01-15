@@ -68,10 +68,16 @@ open class ReportIssueActivity : BaseActivity() {
 
         reportIssueButton.setOnClickListener {
             val area =
-                getArea(areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String), sharePrefUtil)
+                getArea(
+                    areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String),
+                    sharePrefUtil
+                )
 
             val category =
-                getCategory(categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String), sharePrefUtil)
+                getCategory(
+                    categoryName = (if (categorySpinner == null) null else categorySpinner!!.selectedItem as String),
+                    sharePrefUtil
+                )
 
             val description = descriptionTv?.text.toString()
             if (description.isEmpty()) {
@@ -107,6 +113,10 @@ open class ReportIssueActivity : BaseActivity() {
                 progressbar.visibility = View.VISIBLE
                 reportIssueButton.isClickable = false
                 reportIssueButton.isEnabled = false
+                descriptionTv?.isClickable = false
+                descriptionTv?.isEnabled = false
+                directionsTv?.isClickable = false
+                directionsTv?.isEnabled = false
                 val issue = Issue(
                     user = sharePrefUtil.getUser(),
                     category = category,
@@ -154,6 +164,10 @@ open class ReportIssueActivity : BaseActivity() {
                         ).show()
                         reportIssueButton.isClickable = true
                         reportIssueButton.isEnabled = true
+                        descriptionTv?.isClickable = true
+                        descriptionTv?.isEnabled = true
+                        directionsTv?.isClickable = true
+                        directionsTv?.isEnabled = true
                     }
                 })
 
@@ -170,7 +184,8 @@ open class ReportIssueActivity : BaseActivity() {
 
 
     private fun initSpinners() {
-        val areaAdapter = SmartCitizenSpinnerAdapter(this, AppData.getAreas(sharePrefUtil).map { it.name })
+        val areaAdapter =
+            SmartCitizenSpinnerAdapter(this, AppData.getAreas(sharePrefUtil).map { it.name })
         areaSpinner?.let {
             it.adapter = areaAdapter
         }
@@ -225,6 +240,7 @@ open class ReportIssueActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         //called when image was captured from camera intent
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view

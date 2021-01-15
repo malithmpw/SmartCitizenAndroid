@@ -107,6 +107,11 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
                 response: Response<List<IssueResponse>>
             ) {
                 if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@ViewReportedIssueAdminActivity,
+                        resources.getString(if (isResolvePage) R.string.mark_as_resolved_successfully else R.string.assigned_successfully) ,
+                        Toast.LENGTH_LONG
+                    ).show()
                     isSelectAllSelected = false
                     selectAllButton.text = resources.getText(R.string.select_all)
                     requestFilteredDataFromServer(filter = appliedFilter)

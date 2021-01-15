@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.R
+import cmb.reporter.app.smartcitizenapp.adapter.convertDateToReadableFormat
 import cmb.reporter.app.smartcitizenapp.adapter.setImageViaGlideRoundedCorners
 import cmb.reporter.app.smartcitizenapp.models.*
 import retrofit2.Call
@@ -26,6 +27,7 @@ class IssueDetailsActivity : BaseActivity() {
             val imageViewOpenMaps = findViewById<ImageView>(R.id.imageView_open_in_map)
             val issueId = findViewById<TextView>(R.id.textView_issue_id_value)
             val issueStatus = findViewById<TextView>(R.id.textView_issue_status_value)
+            val issueDate = findViewById<TextView>(R.id.textView_issue_date)
             val issueArea = findViewById<TextView>(R.id.textView_area_value)
             val issueAddressTo = findViewById<TextView>(R.id.textView_address_to_value)
             val issueDesc = findViewById<TextView>(R.id.textView_issue_desc_value)
@@ -72,6 +74,7 @@ class IssueDetailsActivity : BaseActivity() {
                     ).show()
                 }
             }
+            issueDate.text = convertDateToReadableFormat(issue.createdDate)
             issueId.text = issue.id.toString()
             issueStatus.text = issue.status
             issueArea.text = issue.area?.name ?: resources.getString(R.string.area_unknown)

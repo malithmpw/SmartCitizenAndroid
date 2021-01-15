@@ -82,6 +82,7 @@
     <string name="address_to">Address To:</string>
     <string name="area_tv">Area:</string>
     <string name="status_tv">Status:</string>
+    <string name="created_on">Created On:</string>
     <string name="issue_id_tv">Issue Id:</string>
     <string name="resolution">Issue Resolution</string>
     <string name="resolution_label">Resolution:</string>
