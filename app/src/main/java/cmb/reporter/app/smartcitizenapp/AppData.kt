@@ -3,6 +3,8 @@ package cmb.reporter.app.smartcitizenapp
 import cmb.reporter.app.smartcitizenapp.models.Area
 import cmb.reporter.app.smartcitizenapp.models.Category
 import cmb.reporter.app.smartcitizenapp.models.IssueResponse
+import cmb.reporter.app.smartcitizenapp.models.User
+import cmb.reporter.app.smartcitizenapp.sharedPref.ADMIN_DATA
 import cmb.reporter.app.smartcitizenapp.sharedPref.AREA_DATA
 import cmb.reporter.app.smartcitizenapp.sharedPref.CATEGORY_DATA
 import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
@@ -12,10 +14,12 @@ import com.google.gson.Gson
 object AppData {
     private var areaList: List<Area> = mutableListOf()
     private var categoryList: List<Category> = mutableListOf()
+    private var adminList: List<User> = mutableListOf()
     private var selectedIssue: IssueResponse? = null
     private var clickedOnRejectOrResolveButton: Boolean = false
 
     const val selectArea = "Select Area"
+    const val selectAdmin = "Select Admin"
     const val selectDepartment = "Select Department"
     const val selectStatus = "Select Status"
 
@@ -48,6 +52,25 @@ object AppData {
             categoryList = obj.categories
         }
         return categoryList
+    }
+
+    fun getAdmins(sharePrefUtil: SharePrefUtil) : List<User>{
+        val adminData = sharePrefUtil.getStringValue(ADMIN_DATA)
+        val gson = Gson()
+        val obj: Admins = gson.fromJson(adminData, Admins::class.java)
+        if (adminList.isEmpty() && obj.admins.isEmpty()){
+            return listOf()
+        }else if(adminList.isEmpty() && obj.admins.isNotEmpty()){
+            adminList = obj.admins
+        }
+        return adminList
+    }
+
+    fun setAdmins(admins: List<User>, sharePrefUtil: SharePrefUtil) {
+        adminList = admins
+        val gson = Gson()
+        val json = gson.toJson(Admins(adminList))
+        sharePrefUtil.putStringValue(ADMIN_DATA, json)
     }
 
 
@@ -104,3 +127,4 @@ fun getStatus(status: String?): String? {
 
 data class Areas(val areas: List<Area>)
 data class Categories(val categories: List<Category>)
+data class Admins(val admins: List<User>)

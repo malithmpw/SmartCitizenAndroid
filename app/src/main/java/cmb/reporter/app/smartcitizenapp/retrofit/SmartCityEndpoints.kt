@@ -2,10 +2,7 @@ package cmb.reporter.app.smartcitizenapp.retrofit
 
 import cmb.reporter.app.smartcitizenapp.models.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface SmartCityEndpoints {
     @POST("user/login")
@@ -34,5 +31,8 @@ interface SmartCityEndpoints {
 
     @GET("user/check")
     fun isRegisteredUser(@Query("isRegisteredUser") isRegisteredUser:String): Call<Boolean>
+
+    @GET("util/appData/{userId}")
+    fun getAppData(@Path("userId") userId:Int): Call<AllAppData>
 
 }

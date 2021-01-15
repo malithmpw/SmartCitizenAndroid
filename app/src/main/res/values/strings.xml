@@ -87,6 +87,9 @@
     <string name="resolution">Issue Resolution</string>
     <string name="resolution_label">Resolution:</string>
     <string name="assigned_successfully">Assigned Successfully</string>
+    <string name="assigned_to_admin">Assigned To</string>
+    <string name="you_have_not_selected_any_issues">You have not selected any issues</string>
+    <string name="please_select_admin_user">Please Select Admin user</string>
 
     <string-array name="languages">
         <item>Select Language</item>

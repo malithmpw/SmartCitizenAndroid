@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cmb.reporter.app.smartcitizenapp.*
 import cmb.reporter.app.smartcitizenapp.adapter.EndlessRecyclerViewScrollListener
 import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdapter
+import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdminAdapter
 import cmb.reporter.app.smartcitizenapp.adapter.UserIssueAdapter
 import cmb.reporter.app.smartcitizenapp.models.*
 import cmb.reporter.app.smartcitizenapp.models.Filter
@@ -34,15 +35,18 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
     private var isSelectAllButtonClicked = false
     private lateinit var selectAllButton: Button
     private var pageType: String? = null
+    private var adminsSpinner: Spinner? = null
 
     private lateinit var filterBottomSheet: BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_reported_issue_admin_layout)
-
+        val loggedInUser = sharePrefUtil.getUser()
         pageType = intent.getStringExtra("pageType")
         val rv = findViewById<RecyclerView>(R.id.recycleView)
+
+        adminsSpinner = findViewById(R.id.spinner_admin_users)
 
         progressbar = findViewById(R.id.progressBar)
         filterBottomSheet = createBottomSheetDialog(this)
@@ -65,13 +69,39 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         if (!pageType.isNullOrEmpty()) {
             assignToMeOrAdmin.setText(R.string.resolve)
         }
+        if (loggedInUser.role.name =="SUPERADMIN"){
+            assignToMeOrAdmin.setText(R.string.assigned_to_admin)
+            adminsSpinner?.visibility = View.VISIBLE
+            val adminAdapter =
+                SmartCitizenSpinnerAdminAdapter(this, AppData.getAdmins(sharePrefUtil))
+            adminsSpinner?.let {
+                it.adapter = adminAdapter
+            }
+        }
         assignToMeOrAdmin.setOnClickListener {
-            val user = sharePrefUtil.getUser()
-            if (user.role.name == "ADMIN") {
+            if (loggedInUser.role.name == "ADMIN") {
                 val selectedIssues = adapter.getSelectedItems(!pageType.isNullOrEmpty())
-                updateAssignToMe(selectedIssues, !pageType.isNullOrEmpty())
-            } else if (user.role.name == "SUPERADMIN") {
-//TODO super admin flow
+                updateAssignToMeOrAdmin(selectedIssues, !pageType.isNullOrEmpty())
+            } else if (loggedInUser.role.name == "SUPERADMIN") {
+                val selectedAdmin = adminsSpinner?.selectedItem as User
+                if (selectedAdmin.id == -1){
+                    Toast.makeText(
+                        this@ViewReportedIssueAdminActivity,
+                        resources.getString(R.string.please_select_admin_user),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@setOnClickListener
+                }
+                val selectedIssues = adapter.getSelectedItems(!pageType.isNullOrEmpty(), superAdmin = selectedAdmin)
+                if (selectedIssues.isEmpty()){
+                    Toast.makeText(
+                        this@ViewReportedIssueAdminActivity,
+                        resources.getString(R.string.you_have_not_selected_any_issues),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@setOnClickListener
+                }
+                updateAssignToMeOrAdmin(selectedIssues, false)
             }
         }
 
@@ -99,7 +129,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         }
     }
 
-    private fun updateAssignToMe(list: List<IssueUpdate>, isResolvePage: Boolean = false) {
+    private fun updateAssignToMeOrAdmin(list: List<IssueUpdate>, isResolvePage: Boolean = false) {
         val call = apiService.updateIssues(list)
         call.enqueue(object : Callback<List<IssueResponse>> {
             override fun onResponse(

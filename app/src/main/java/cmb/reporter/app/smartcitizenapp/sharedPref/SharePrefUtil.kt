@@ -59,6 +59,7 @@ class SharePrefUtil(context: Context) {
 
 const val USER_PASSWORD = "user_password"
 const val AREA_DATA = "area_data"
+const val ADMIN_DATA = "admin_data"
 const val CATEGORY_DATA = "category_data"
 const val USER_ROLE = "user_role"
 const val USER = "user"

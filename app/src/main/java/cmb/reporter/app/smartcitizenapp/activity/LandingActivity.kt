@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,9 +18,7 @@ import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.BuildConfig
 import cmb.reporter.app.smartcitizenapp.R
 import cmb.reporter.app.smartcitizenapp.adapter.setImageViaGlide
-import cmb.reporter.app.smartcitizenapp.models.Area
-import cmb.reporter.app.smartcitizenapp.models.Category
-import cmb.reporter.app.smartcitizenapp.models.User
+import cmb.reporter.app.smartcitizenapp.models.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,8 +62,7 @@ class LandingActivity : BaseActivity() {
             "SUPERADMIN" -> {
                 welcomeDescription.text = resources.getString(R.string.landing_page_message_admin)
                 viewIssueButton.text = resources.getString(R.string.view_issues_reported)
-                reportNewOrAssignedIssueButton.text =
-                    resources.getString(R.string.issues_assigned_to_me)
+                reportNewOrAssignedIssueButton.visibility = View.GONE
             }
         }
 
@@ -177,40 +175,31 @@ class LandingActivity : BaseActivity() {
     }
 
     private fun initAppData() {
-        val areaRequest = apiService.getAreas()
-        areaRequest.enqueue(object : Callback<List<Area>> {
-            override fun onResponse(call: Call<List<Area>>, response: Response<List<Area>>) {
+        val appDataRequest = apiService.getAppData(sharePrefUtil.getUser().id)
+        appDataRequest.enqueue(object : Callback<AllAppData>{
+            override fun onResponse(call: Call<AllAppData>, response: Response<AllAppData>) {
                 if (response.isSuccessful) {
-                    val areas = response.body()
-                    areas?.let {
-                        val areas = it.toMutableList()
-                        areas.add(0, Area(-1, AppData.selectArea))
-                        AppData.setAreas(areas, sharePrefUtil)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<List<Area>>, t: Throwable) {
-            }
-        })
-
-        val categoryRequest = apiService.getCategories()
-        categoryRequest.enqueue(object : Callback<List<Category>> {
-            override fun onResponse(
-                call: Call<List<Category>>,
-                response: Response<List<Category>>
-            ) {
-                if (response.isSuccessful) {
-                    val categories = response.body()
-                    categories?.let {
+                    val allAppData = response.body()
+                    allAppData?.categoryList?.let {
                         val categories = it.toMutableList()
                         categories.add(0, Category(-1, AppData.selectDepartment, ""))
                         AppData.setCategories(categories, sharePrefUtil)
                     }
+                    allAppData?.areas?.let {
+                        val areas = it.toMutableList()
+                        areas.add(0, Area(-1, AppData.selectArea))
+                        AppData.setAreas(areas, sharePrefUtil)
+                    }
+                    allAppData?.adminUserList?.let {
+                        val admins = it.toMutableList()
+                        admins.add(0, User(id = -1, firstName = "Select Admin", lastName = "", phoneNo = "", password = null, role = Role(-1, "")))
+                        AppData.setAdmins(admins, sharePrefUtil)
+                    }
                 }
             }
 
-            override fun onFailure(call: Call<List<Category>>, t: Throwable) {
+            override fun onFailure(call: Call<AllAppData>, t: Throwable) {
+
             }
         })
     }

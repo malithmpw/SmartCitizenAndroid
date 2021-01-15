@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import cmb.reporter.app.smartcitizenapp.R
+import cmb.reporter.app.smartcitizenapp.models.User
 
 
 class SmartCitizenSpinnerAdapter(private val context: Context, private val list: List<String>) :
@@ -29,6 +30,35 @@ class SmartCitizenSpinnerAdapter(private val context: Context, private val list:
         val convertView = inflter.inflate(R.layout.string_adapter_row, null)
         val tv = convertView.findViewById<TextView>(R.id.string_row)
         tv.text = list[position]
+        if (position != 0) {
+            tv.setTextColor(context.resources.getColor(R.color.colorAccent))
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+        }
+        return tv
+    }
+
+}
+
+class SmartCitizenSpinnerAdminAdapter(private val context: Context, private val list: List<User>) :
+    BaseAdapter() {
+    var inflter: LayoutInflater = (LayoutInflater.from(context))
+    override fun getCount(): Int {
+        return list.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return list[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val convertView = inflter.inflate(R.layout.string_adapter_row, null)
+        val tv = convertView.findViewById<TextView>(R.id.string_row)
+        val user = list[position]
+        tv.text = "${user.firstName} ${user.lastName}"
         if (position != 0) {
             tv.setTextColor(context.resources.getColor(R.color.colorAccent))
             tv.setTypeface(tv.typeface, Typeface.BOLD)

@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -47,6 +46,8 @@ open class ReportIssueActivity : BaseActivity() {
     private var mLastLocation: Location? = null
     private var descriptionTv: TextView? = null
     private var directionsTv: TextView? = null
+    private var retakeImageView: ImageButton? = null
+    private var reportIssueButton: Button? = null
     private var isDirectionTextViewVisible = false
     private lateinit var progressbar: ProgressBar
 
@@ -58,9 +59,9 @@ open class ReportIssueActivity : BaseActivity() {
         categorySpinner = findViewById(R.id.spinner_department)
         progressbar = findViewById(R.id.progressBar)
 
-        val retakeImageView = findViewById<ImageButton>(R.id.imageButton_retake)
-        val reportIssueButton = findViewById<Button>(R.id.button_report_issue)
-        retakeImageView.setOnClickListener {
+        retakeImageView = findViewById(R.id.imageButton_retake)
+        reportIssueButton = findViewById(R.id.button_report_issue)
+        retakeImageView?.setOnClickListener {
             openCameraToTakeAPicture()
         }
         descriptionTv = findViewById(R.id.textView_report_issue_description)
@@ -68,7 +69,7 @@ open class ReportIssueActivity : BaseActivity() {
         openCameraToTakeAPicture()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        reportIssueButton.setOnClickListener {
+        reportIssueButton?.setOnClickListener {
             val area =
                 getArea(
                     areaName = (if (areaSpinner == null) null else areaSpinner!!.selectedItem as String),
@@ -113,12 +114,7 @@ open class ReportIssueActivity : BaseActivity() {
 
             if ((latitude != null && longitude != null) || directions.isNotEmpty()) {
                 progressbar.visibility = View.VISIBLE
-                reportIssueButton.isClickable = false
-                reportIssueButton.isEnabled = false
-                descriptionTv?.isClickable = false
-                descriptionTv?.isEnabled = false
-                directionsTv?.isClickable = false
-                directionsTv?.isEnabled = false
+                enableComponents(false)
                 val issue = Issue(
                     user = sharePrefUtil.getUser(),
                     category = category,
@@ -146,8 +142,7 @@ open class ReportIssueActivity : BaseActivity() {
                             ).show()
                             onBackPressed()
                         } else {
-                            reportIssueButton.isClickable = true
-                            reportIssueButton.isEnabled = true
+                            enableComponents(true)
                             progressbar.visibility = View.GONE
                             Toast.makeText(
                                 this@ReportIssueActivity,
@@ -164,12 +159,7 @@ open class ReportIssueActivity : BaseActivity() {
                             resources.getString(R.string.error_occurred_try_again),
                             Toast.LENGTH_LONG
                         ).show()
-                        reportIssueButton.isClickable = true
-                        reportIssueButton.isEnabled = true
-                        descriptionTv?.isClickable = true
-                        descriptionTv?.isEnabled = true
-                        directionsTv?.isClickable = true
-                        directionsTv?.isEnabled = true
+                        enableComponents(true)
                     }
                 })
 
@@ -182,6 +172,18 @@ open class ReportIssueActivity : BaseActivity() {
             }
 
         }
+    }
+
+    private fun enableComponents(isEnabled: Boolean) {
+        reportIssueButton?.isClickable = isEnabled
+        reportIssueButton?.isEnabled = isEnabled
+        descriptionTv?.isClickable = isEnabled
+        descriptionTv?.isEnabled = isEnabled
+        directionsTv?.isClickable = isEnabled
+        directionsTv?.isEnabled = isEnabled
+        areaSpinner?.isEnabled = isEnabled
+        categorySpinner?.isEnabled = isEnabled
+        retakeImageView?.isEnabled = isEnabled
     }
 
 

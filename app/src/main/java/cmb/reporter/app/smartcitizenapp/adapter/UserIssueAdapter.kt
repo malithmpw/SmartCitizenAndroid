@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +18,12 @@ import cmb.reporter.app.smartcitizenapp.activity.IssueDetailsActivity
 import cmb.reporter.app.smartcitizenapp.models.IssueResponse
 import cmb.reporter.app.smartcitizenapp.models.IssueStatus
 import cmb.reporter.app.smartcitizenapp.models.IssueUpdate
+import cmb.reporter.app.smartcitizenapp.models.User
 import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import java.io.File
 import java.text.SimpleDateFormat
 
 
@@ -78,7 +77,10 @@ class UserIssueAdapter(
         }
     }
 
-    fun getSelectedItems(isResolvedList: Boolean = false): List<IssueUpdate> {
+    fun getSelectedItems(
+        isResolvedList: Boolean = false,
+        superAdmin: User? = null
+    ): List<IssueUpdate> {
         val updateList = mutableListOf<IssueUpdate>()
         list.forEach {
             if (it.isSelected && !isResolvedList && it.status == IssueStatus.OPEN.name) {
@@ -87,7 +89,7 @@ class UserIssueAdapter(
                         it.id.toLong(),
                         IssueStatus.ASSIGNED.name,
                         user,
-                        user,
+                        superAdmin ?: user,
                         null
                     )
                 )
@@ -189,7 +191,7 @@ fun ImageView.setImageViaGlideRoundedCorners(
     val options: RequestOptions = RequestOptions()
         .placeholder(R.drawable.issue_location)
         .error(R.drawable.issue_location)
-        .transform( RoundedCorners(10.dp)).fitCenter()
+        .transform(RoundedCorners(10.dp)).fitCenter()
     Glide.with(context).load(url).apply(options).into(this)
 }
 
