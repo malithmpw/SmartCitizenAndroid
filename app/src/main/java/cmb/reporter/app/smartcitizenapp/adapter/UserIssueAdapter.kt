@@ -3,6 +3,7 @@ package cmb.reporter.app.smartcitizenapp.adapter
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -188,8 +189,17 @@ fun ImageView.setImageViaGlideRoundedCorners(
     val options: RequestOptions = RequestOptions()
         .placeholder(R.drawable.issue_location)
         .error(R.drawable.issue_location)
-        .transform(FitCenter(), RoundedCorners(10.dp))
+        .transform( RoundedCorners(10.dp)).fitCenter()
     Glide.with(context).load(url).apply(options).into(this)
+}
+
+fun ImageView.setImageViaUriRoundedCorners(
+    context: Context,
+    bitmap: Bitmap,
+) {
+    val options: RequestOptions = RequestOptions()
+        .transform(FitCenter(), RoundedCorners(10.dp))
+    Glide.with(context).load(bitmap).apply(options).into(this)
 }
 
 fun ImageView.setImageViaGlide(

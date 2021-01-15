@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -21,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import cmb.reporter.app.*
 import cmb.reporter.app.smartcitizenapp.*
 import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdapter
+import cmb.reporter.app.smartcitizenapp.adapter.setImageViaUriRoundedCorners
 import cmb.reporter.app.smartcitizenapp.models.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -244,7 +246,11 @@ open class ReportIssueActivity : BaseActivity() {
         //called when image was captured from camera intent
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view
-            issueImage?.setImageURI(imageUri)
+
+            imageUri?.let {
+                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+                issueImage?.setImageViaUriRoundedCorners(this, bitmap)
+            }
             imageUri?.let {
                 val imageStream: InputStream? = contentResolver.openInputStream(it)
                 imageStream?.let {

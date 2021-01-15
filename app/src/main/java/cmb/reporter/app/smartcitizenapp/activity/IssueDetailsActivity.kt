@@ -82,7 +82,7 @@ class IssueDetailsActivity : BaseActivity() {
                 issue.category?.name ?: resources.getString(R.string.department_unknown)
             issueDesc.text = issue.description
 
-            if (user.role.name == "ADMIN") {
+            if (user.role.name == "ADMIN" && issue.status != IssueStatus.RESOLVED.name && issue.status != IssueStatus.REJECTED.name) {
                 buttonLayout.visibility = View.VISIBLE
 
                 if (issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id) {
