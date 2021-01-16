@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.R
+import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdminAdapter
 import cmb.reporter.app.smartcitizenapp.adapter.convertDateToReadableFormat
 import cmb.reporter.app.smartcitizenapp.adapter.setImageViaGlideRoundedCorners
 import cmb.reporter.app.smartcitizenapp.models.*
@@ -34,6 +35,7 @@ class IssueDetailsActivity : BaseActivity() {
             val markAsResolvedButton = findViewById<Button>(R.id.marked_as_resolved)
             val markAsRejectedButton = findViewById<Button>(R.id.marked_as_rejected)
             val buttonLayout = findViewById<LinearLayout>(R.id.button_layout_issue_details)
+            val buttonLayoutSuperAdmin = findViewById<LinearLayout>(R.id.button_layout_super_admin)
             val issueResolveMessage = findViewById<EditText>(R.id.issue_resolve_message)
 
             val directionLabel = findViewById<TextView>(R.id.textView_direction_label)
@@ -41,6 +43,9 @@ class IssueDetailsActivity : BaseActivity() {
 
             val resolutionLabel = findViewById<TextView>(R.id.textView_resolution_label)
             val resolutionValue = findViewById<TextView>(R.id.textView_resolution_value)
+            val assignToAdminButton = findViewById<Button>(R.id.assign_to_admin)
+            val adminsSpinner  = findViewById<Spinner>(R.id.spinner_admin_users)
+
 
             if (!issue.directions.isNullOrEmpty()) {
                 directionLabel.visibility = View.VISIBLE
@@ -84,6 +89,7 @@ class IssueDetailsActivity : BaseActivity() {
 
             if (user.role.name == "ADMIN" && issue.status != IssueStatus.RESOLVED.name && issue.status != IssueStatus.REJECTED.name) {
                 buttonLayout.visibility = View.VISIBLE
+                buttonLayoutSuperAdmin.visibility = View.GONE
 
                 if (issue.status == IssueStatus.ASSIGNED.name && user.id == issue.assignee?.id) {
                     markAsResolvedButton.setOnClickListener {
@@ -125,8 +131,8 @@ class IssueDetailsActivity : BaseActivity() {
                             IssueUpdate(
                                 issue.id.toLong(),
                                 IssueStatus.ASSIGNED.name,
-                                null,
-                                null,
+                                user,
+                                user,
                                 null
                             )
                         )
@@ -134,6 +140,29 @@ class IssueDetailsActivity : BaseActivity() {
                         AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                     }
                     markAsRejectedButton.visibility = View.INVISIBLE
+                }
+            }else if (user.role.name == "SUPERADMIN" && issue.status == IssueStatus.OPEN.name){
+                buttonLayout.visibility = View.GONE
+                buttonLayoutSuperAdmin.visibility = View.VISIBLE
+                val adminAdapter =
+                    SmartCitizenSpinnerAdminAdapter(this, AppData.getAdmins(sharePrefUtil))
+                adminsSpinner?.let {
+                    it.adapter = adminAdapter
+                }
+
+                assignToAdminButton.setOnClickListener {
+                    val selectedAdmin = adminsSpinner?.selectedItem as User
+                    if (selectedAdmin.id == -1){
+                        Toast.makeText(
+                            this@IssueDetailsActivity,
+                            resources.getString(R.string.please_select_admin_user),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@setOnClickListener
+                    }
+                    val issueUpdate = IssueUpdate(issue.id.toLong(),IssueStatus.ASSIGNED.name, assignBy = user, assignee = selectedAdmin, null)
+                    updateIssueDetails(listOf(issueUpdate), false)
+                    AppData.markedAsActionPerformedOnIssueDetailsPage(true)
                 }
             }
 
