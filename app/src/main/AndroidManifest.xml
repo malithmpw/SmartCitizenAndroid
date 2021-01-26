@@ -47,6 +47,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="cmb.reporter.app.smartcitizenapp.activity.ReportIssueActivity"
+            android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name="cmb.reporter.app.smartcitizenapp.activity.IssueDetailsActivity"
@@ -62,6 +63,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="cmb.reporter.app.smartcitizenapp.activity.VerifyNumberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cmb.reporter.app.smartcitizenapp.activity.ForgotPasswordActivity"
             android:screenOrientation="portrait" />
 
     </application>

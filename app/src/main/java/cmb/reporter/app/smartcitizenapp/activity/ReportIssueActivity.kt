@@ -5,9 +5,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -21,7 +24,7 @@ import androidx.core.app.ActivityCompat
 import cmb.reporter.app.*
 import cmb.reporter.app.smartcitizenapp.*
 import cmb.reporter.app.smartcitizenapp.adapter.SmartCitizenSpinnerAdapter
-import cmb.reporter.app.smartcitizenapp.adapter.setImageViaUriRoundedCorners
+import cmb.reporter.app.smartcitizenapp.adapter.setImageViaDrawableRoundedCorners
 import cmb.reporter.app.smartcitizenapp.models.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -239,6 +242,7 @@ open class ReportIssueActivity : BaseActivity() {
         imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         //camera intent
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
         startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
     }
@@ -249,10 +253,18 @@ open class ReportIssueActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view
 
+          //  issueImage?.setImageURI(imageUri)
             imageUri?.let {
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
-                issueImage?.setImageViaUriRoundedCorners(this, bitmap)
+                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, it))
+                } else {
+                    MediaStore.Images.Media.getBitmap(this.contentResolver, it)
+                }
+                val drawable = BitmapDrawable(resources, bitmap)
+                issueImage?.setImageDrawable(drawable)
+                issueImage?.setImageViaDrawableRoundedCorners(this, drawable)
             }
+            //issueImage?.setImageURI(imageUri)
             imageUri?.let {
                 val imageStream: InputStream? = contentResolver.openInputStream(it)
                 imageStream?.let {

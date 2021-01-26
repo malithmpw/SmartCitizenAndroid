@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -195,13 +196,14 @@ fun ImageView.setImageViaGlideRoundedCorners(
     Glide.with(context).load(url).apply(options).into(this)
 }
 
-fun ImageView.setImageViaUriRoundedCorners(
+fun ImageView.setImageViaDrawableRoundedCorners(
     context: Context,
-    bitmap: Bitmap,
+    drawable: Drawable,
 ) {
     val options: RequestOptions = RequestOptions()
-        .transform(FitCenter(), RoundedCorners(10.dp))
-    Glide.with(context).load(bitmap).apply(options).into(this)
+        .transform(RoundedCorners(10.dp)).fitCenter()
+        .placeholder(drawable)
+    Glide.with(context).asDrawable().load("").apply(options).into(this)
 }
 
 fun ImageView.setImageViaGlide(

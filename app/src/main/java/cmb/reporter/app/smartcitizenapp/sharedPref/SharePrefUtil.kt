@@ -24,14 +24,28 @@ class SharePrefUtil(context: Context) {
     fun putStringValue(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
-        editor.commit()
+        editor.apply()
     }
 
-    fun putIntValue(key: String, value: Int) {
+    fun putLongValue(key: String, value: Long) {
         val editor = sharedPreferences.edit()
-        editor.putInt(key, value)
-        editor.commit()
+        editor.putLong(key, value)
+        editor.apply()
     }
+
+    fun getLongValue(key: String): Long {
+        return sharedPreferences.getLong(key, -1L)
+    }
+
+    fun is24hoursElapsed(): Boolean {
+        val lastAccessedTime = getLongValue(LAST_PHONE_NUMBER_VERIFIED_TIME)
+        if (lastAccessedTime == -1L){
+            return true
+        }
+        val now = System.currentTimeMillis()
+        return (now - lastAccessedTime) > 24 * 60 * 60 * 1000
+    }
+
 
     fun setApplicationLocale(context: Context, locale: String) {
         val resources: Resources = context.resources
@@ -51,7 +65,7 @@ class SharePrefUtil(context: Context) {
         putStringValue(USER_ROLE, loginResponse.role.name)
     }
 
-    fun getUser(): User{
+    fun getUser(): User {
         val userJson = getStringValue(USER)
         return Gson().fromJson(userJson, User::class.java)
     }
@@ -68,3 +82,4 @@ const val PHONE_NUMBER = "phoneNumber"
 const val SI = "si"
 const val TA = "ta"
 const val EN = "en"
+const val LAST_PHONE_NUMBER_VERIFIED_TIME = "last_phone_number_verified_time"

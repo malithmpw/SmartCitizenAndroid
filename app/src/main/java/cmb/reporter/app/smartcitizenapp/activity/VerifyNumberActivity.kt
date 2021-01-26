@@ -104,6 +104,14 @@ class VerifyNumberActivity : BaseActivity() {
                         ).show()
                     }
                     else -> {
+                        if (sharePrefUtil.is24hoursElapsed()) {
+                            Toast.makeText(
+                                this@VerifyNumberActivity,
+                                getString(R.string.you_are_allowed_to_change_password_once_a_day),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return@setOnClickListener
+                        }
                         val options = PhoneAuthOptions.newBuilder(mAuth)
                             .setPhoneNumber("+94${phoneNo.substring(1)}")       // Phone number to verify
                             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
@@ -147,7 +155,7 @@ class VerifyNumberActivity : BaseActivity() {
             override fun onVerificationFailed(e: FirebaseException) {
                 Toast.makeText(
                     this@VerifyNumberActivity,
-                    "Phone Number Verification Failed, try again later",
+                    getString(R.string.phone_number_verification_failed_try_again),
                     Toast.LENGTH_LONG
                 ).show()
             }

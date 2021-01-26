@@ -10,6 +10,7 @@ import cmb.reporter.app.smartcitizenapp.models.LoginRequest
 import cmb.reporter.app.smartcitizenapp.models.LoginResponse
 import cmb.reporter.app.smartcitizenapp.security.EncryptUtil
 import cmb.reporter.app.smartcitizenapp.sharedPref.*
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +23,14 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
 
+        val savedUserPhoneNumber = sharePrefUtil.getStringValue(PHONE_NUMBER)
+
         userIdEt = findViewById(R.id.editText_userPhoneNumber)
+        savedUserPhoneNumber?.let {
+            if (it.isNotEmpty()){
+                userIdEt.setText(it)
+            }
+        }
         passwordEt = findViewById(R.id.editText_password)
         progressbar = findViewById(R.id.progressBar)
 
@@ -75,6 +83,11 @@ class LoginActivity : BaseActivity() {
                 }
             }
         }
+
+        val forgotPasswordTv = findViewById<TextView>(R.id.forgot_password_textView)
+        forgotPasswordTv.setOnClickListener {
+            startActivity(Intent(this@LoginActivity, ForgotPasswordActivity::class.java))
+        }
     }
 
     private fun loginUser(context: Context, userId: String, password: String) {
@@ -86,6 +99,7 @@ class LoginActivity : BaseActivity() {
                     val user = response.body()
                     user?.let {
                         sharePrefUtil.putStringValue(USER_PASSWORD, password)
+                        sharePrefUtil.putStringValue(PHONE_NUMBER, user.phoneNo)
                         sharePrefUtil.saveUser(user)
                         finish()
                         startActivity(Intent(context, LandingActivity::class.java))
@@ -96,7 +110,7 @@ class LoginActivity : BaseActivity() {
                     passwordEt.setTextColor(resources.getColor(R.color.red))
                     Toast.makeText(
                         this@LoginActivity,
-                        "Phone Number or password incorrect",
+                        getString(R.string.phone_number_or_password_incorrect),
                         Toast.LENGTH_LONG
                     ).show()
                 }
