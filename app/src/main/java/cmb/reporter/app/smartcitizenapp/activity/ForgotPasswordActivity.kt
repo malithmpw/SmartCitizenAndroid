@@ -122,6 +122,7 @@ class ForgotPasswordActivity : BaseActivity() {
                         progressbar.visibility = View.GONE
                         if (response.isSuccessful) {
                             sharePrefUtil.putStringValue(USER_PASSWORD, encryptedPass)
+                            sharePrefUtil.putLongValue(LAST_PHONE_NUMBER_VERIFIED_TIME, System.currentTimeMillis())
                             Toast.makeText(
                                 this@ForgotPasswordActivity,
                                 getString(R.string.new_password_added_successfully),
