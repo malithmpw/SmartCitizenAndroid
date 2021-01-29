@@ -45,7 +45,8 @@ class ForgotPasswordActivity : BaseActivity() {
         val fpNewConfPassEt = findViewById<EditText>(R.id.forgot_password_conf_new_pass_et)
         val fpSaveButton = findViewById<Button>(R.id.forgot_password_save_new_btn)
 
-        if (sharePrefUtil.is24hoursElapsed()) {
+        val is24HoursElapsed = sharePrefUtil.is24hoursElapsed()
+        if (!is24HoursElapsed) {
             fpVerifyButton.visibility = View.INVISIBLE
             Toast.makeText(
                 this@ForgotPasswordActivity,
@@ -63,7 +64,7 @@ class ForgotPasswordActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.let {
-                    if (it.length == 10) {
+                    if (it.length == 10 && is24HoursElapsed) {
                         fpVerifyButton.visibility = View.VISIBLE
                     } else {
                         fpVerifyButton.visibility = View.INVISIBLE
