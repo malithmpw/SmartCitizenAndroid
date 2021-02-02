@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/issue_id_tv"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -219,9 +219,9 @@
 
             <ImageView
                 android:id="@+id/imageView_open_in_map"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="16dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView_issue_image_wrapper"
@@ -232,7 +232,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/go_to_location"
-                android:textSize="10dp"
+                android:textSize="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/imageView_open_in_map"
                 app:layout_constraintTop_toBottomOf="@+id/imageView_open_in_map" />
 

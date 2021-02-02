@@ -56,7 +56,7 @@
     <string name="please_attach_an_image">Please Attach an Image</string>
     <string name="otp_sent_to_ur_number">OTP sent to your Number</string>
     <string name="number_verification_failed_try_again">Phone Number Verification Failed, try again later</string>
-    <string name="reporting_is_successful">Reporting is Successful</string>
+    <string name="reporting_is_successful">Issue reported successfully.</string>
     <string name="error_occurred_try_again">Error Occurred, Try again</string>
     <string name="location_data_not_found">Location data not found</string>
     <string name="all_reported_issues">All Reported issues</string>

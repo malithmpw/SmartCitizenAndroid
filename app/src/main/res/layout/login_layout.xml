@@ -30,7 +30,6 @@
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
-        android:text="test"
         app:layout_constraintBottom_toTopOf="@+id/button_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
