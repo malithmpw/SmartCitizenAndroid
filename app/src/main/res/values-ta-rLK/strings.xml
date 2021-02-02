@@ -38,10 +38,10 @@
     <string name="if_you_wish_to_change_the_password_enter_the_old_password_and_new_password_and_click_change_password">கடவுச்சொல்லை மாற்றுவதற்காக</string>
     <string name="change_password">கடவுச்சொல்லை மாற்று</string>
     <string name="go_back">திரும்பிச் செல்லுங்கள்</string>
-    <string name="name_with_colon">Name:</string>
-    <string name="role_with_colon">Role:</string>
-    <string name="verify_number">Verify Number</string>
-    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="name_with_colon">பெயர்:</string>
+    <string name="role_with_colon">பங்கு:</string>
+    <string name="verify_number">எண்ணைச் சரிபார்க்கவும்</string>
+    <string name="verify_phone_number">எண்ணைச் சரிபார்க்கவும்</string>
     <string name="send_otp">OTP ஐ அனுப்பவும்</string>
     <string name="assign_to_me">Assign to Me</string>
     <string name="select_all">Select All</string>
@@ -51,9 +51,9 @@
     <string name="password_cant_be_empty">கடவுச்சொல் காலியாக இருக்க முடியாது.</string>
     <string name="invalid_phone_number">தவறான தொலைபேசி எண்.</string>
     <string name="password_updated_successfully">புதிய கடவுச்சொல் வெற்றிகரமாக சேமிக்கப்படுகிறது.</string>
-    <string name="please_put_down_a_description">Please put down a description</string>
+    <string name="please_put_down_a_description">தயவுசெய்து சிக்கலைப் பற்றி ஒரு சிறிய விளக்கத்தை எழுதுங்கள்</string>
     <string name="phone_number_or_password_incorrect">தொலைபேசி எண் அல்லது கடவுச்சொல் தவறானது. மீண்டும் சரிபார்க்கவும்.</string>
-    <string name="please_attach_an_image">Please Attach an Image</string>
+    <string name="please_attach_an_image">தயவுசெய்து ஒரு புகைப்படத்தை இணைக்கவும்</string>
     <string name="otp_sent_to_ur_number">OTP உங்களுக்கு அனுப்பப்பட்டது</string>
     <string name="number_verification_failed_try_again">தொலைபேசி எண் சரிபார்ப்பு தோல்வியுற்றது.பின்னர் மீண்டும் முயற்சிக்கவும்.</string>
     <string name="reporting_is_successful">வெளியீடு உள்நுழைந்தது</string>
@@ -98,9 +98,13 @@
     <string name="otp">OTP</string>
     <string name="phone_number_verification_failed_try_again">தொலைபேசி எண் சரிபார்ப்பு தோல்வியுற்றது.பின்னர் மீண்டும் முயற்சிக்கவும்.</string>
     <string name="you_are_allowed_to_change_password_once_a_day">கடவுச்சொல்லை மாற்றுவது ஒரு நாளைக்கு ஒரு முறை மட்டுமே அனுமதிக்கப்படுகிறது</string>
-    <string name="passwords_are_empty_or_not_matched">Passwords are empty or Not matched</string>
+    <string name="passwords_are_empty_or_not_matched">கடவுச்சொல் காலியாக உள்ளது அல்லது பொருந்தவில்லை</string>
     <string name="internal_error_occurred_try_again_later">கணினி பிழை, பின்னர் மீண்டும் முயற்சிக்கவும்</string>
     <string name="new_password_added_successfully">புதிய கடவுச்சொல் வெற்றிகரமாக சேமிக்கப்பட்டது.</string>
+    <string name="select_area">Select Area</string>
+    <string name="select_department">Select Department</string>
+    <string name="select_status">Select Status</string>
+
     <string-array name="languages">
         <item>மொழியை தேர்ந்தெடுங்கள்</item>
         <item>සිංහල</item>

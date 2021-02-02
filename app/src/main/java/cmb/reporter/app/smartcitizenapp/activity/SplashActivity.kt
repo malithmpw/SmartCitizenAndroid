@@ -8,14 +8,13 @@ import cmb.reporter.app.smartcitizenapp.R
 import cmb.reporter.app.smartcitizenapp.sharedPref.LANGUAGE
 import cmb.reporter.app.smartcitizenapp.sharedPref.SharePrefUtil
 
-class SplashActivity : AppCompatActivity() {
-    lateinit var sharePrefUtil: SharePrefUtil
+class SplashActivity : BaseActivity(){
     private val SPLASH_TIME_OUT: Long = 2000 // 1 sec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_layout)
 
-        sharePrefUtil = SharePrefUtil(this)
+       // sharePrefUtil = SharePrefUtil(this)
         val selectedLanguage = sharePrefUtil.getStringValue(LANGUAGE)
         Handler().postDelayed({
             if (selectedLanguage.isNullOrEmpty()) {

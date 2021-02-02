@@ -18,7 +18,10 @@ import cmb.reporter.app.smartcitizenapp.AppData
 import cmb.reporter.app.smartcitizenapp.BuildConfig
 import cmb.reporter.app.smartcitizenapp.R
 import cmb.reporter.app.smartcitizenapp.adapter.setImageViaGlide
+import cmb.reporter.app.smartcitizenapp.getLocalizedString
 import cmb.reporter.app.smartcitizenapp.models.*
+import cmb.reporter.app.smartcitizenapp.sharedPref.SI
+import cmb.reporter.app.smartcitizenapp.sharedPref.TA
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -182,17 +185,17 @@ class LandingActivity : BaseActivity() {
                     val allAppData = response.body()
                     allAppData?.categoryList?.let {
                         val categories = it.toMutableList()
-                        categories.add(0, Category(-1, AppData.selectDepartment, ""))
+                        categories.add(0, Category(-1,  getLocalizedString(sharePrefUtil, AppData.selectDepartment), ""))
                         AppData.setCategories(categories, sharePrefUtil)
                     }
                     allAppData?.areas?.let {
                         val areas = it.toMutableList()
-                        areas.add(0, Area(-1, AppData.selectArea))
+                        areas.add(0, Area(-1, getLocalizedString(sharePrefUtil, AppData.selectArea)))
                         AppData.setAreas(areas, sharePrefUtil)
                     }
                     allAppData?.adminUserList?.let {
                         val admins = it.toMutableList()
-                        admins.add(0, User(id = -1, firstName = "Select Admin", lastName = "", phoneNo = "", password = null, role = Role(-1, "")))
+                        admins.add(0, User(id = -1, firstName =  getLocalizedString(sharePrefUtil, AppData.selectAdmin), lastName = "", phoneNo = "", password = null, role = Role(-1, "")))
                         AppData.setAdmins(admins, sharePrefUtil)
                     }
                 }

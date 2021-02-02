@@ -219,7 +219,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         val department =
             getCategory(categoryName = filter.department?.name, sharePrefUtil)
         val status =
-            getStatus(status = filter.status)
+            getStatus(sharePrefUtil, status = filter.status)
         val user = sharePrefUtil.getUser()
 
         progressbar.visibility = View.VISIBLE
@@ -315,7 +315,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
         }
 
         val statusAdapter =
-            SmartCitizenSpinnerAdapter(context, AppData.getStatus(!pageType.isNullOrEmpty()))
+            SmartCitizenSpinnerAdapter(context, AppData.getStatus(sharePrefUtil, !pageType.isNullOrEmpty()))
         statusSpinner?.let {
             it.adapter = statusAdapter
         }
@@ -327,7 +327,7 @@ class ViewReportedIssueAdminActivity : BaseActivity(), LifecycleOwner {
             val department =
                 getCategory(categoryName = categorySpinner.selectedItem as String, sharePrefUtil)
             val status =
-                getStatus(status = statusSpinner.selectedItem as String)
+                getStatus(sharePrefUtil, status = statusSpinner.selectedItem as String)
             val f = Filter(
                 startDate = etFromDate.text.toString().replace("/", ""),
                 endDate = etToDate.text.toString().replace("/", ""),

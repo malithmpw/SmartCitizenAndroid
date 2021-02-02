@@ -14,8 +14,11 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         sharePrefUtil = SharePrefUtil(this)
         val selectedLanguage = sharePrefUtil.getStringValue(LANGUAGE)
-        selectedLanguage?.let {
-            sharePrefUtil.setApplicationLocale(this, selectedLanguage)
+        val user = sharePrefUtil.getUser()
+        if (user.role.name == "USER") {
+            selectedLanguage?.let {
+                sharePrefUtil.setApplicationLocale(this, selectedLanguage)
+            }
         }
     }
 }

@@ -101,6 +101,9 @@
     <string name="passwords_are_empty_or_not_matched">මුරපදය ඇතුලත් කර නොමැත හෝ නොගැලපේ</string>
     <string name="internal_error_occurred_try_again_later">පද්ධතියේ දෝෂයක්. කරුණාකර පසුව උත්සාහ කර බලන්න.</string>
     <string name="new_password_added_successfully">නව මුරපදය සාර්ථකව ගබඩා විය.</string>
+    <string name="select_area">Select Area</string>
+    <string name="select_department">Select Department</string>
+    <string name="select_status">Select Status</string>
 
     <string-array name="languages">
         <item>භාෂාව තෝරන්න</item>
