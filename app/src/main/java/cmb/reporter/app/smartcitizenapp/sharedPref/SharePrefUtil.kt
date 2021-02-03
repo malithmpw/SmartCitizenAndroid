@@ -8,6 +8,7 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import cmb.reporter.app.smartcitizenapp.models.LoginResponse
+import cmb.reporter.app.smartcitizenapp.models.Role
 import cmb.reporter.app.smartcitizenapp.models.User
 import com.google.gson.Gson
 import java.util.*
