@@ -41,7 +41,7 @@
     <string name="name_with_colon">பெயர்:</string>
     <string name="role_with_colon">பங்கு:</string>
     <string name="verify_number">எண்ணைச் சரிபார்க்கவும்</string>
-    <string name="verify_phone_number">எண்ணைச் சரிபார்க்கவும்</string>
+    <string name="verify_phone_number">தொலைபேசி எண்ணை உறுதிப்படுத்தவும்</string>
     <string name="send_otp">OTP ஐ அனுப்பவும்</string>
     <string name="assign_to_me">Assign to Me</string>
     <string name="select_all">Select All</string>

@@ -63,8 +63,8 @@
                 android:text="@string/select_all"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/button_text_size"
+                android:textStyle="normal" />
 
             <Button
                 android:id="@+id/assign_to_admin"
@@ -75,8 +75,8 @@
                 android:text="@string/assign_to_me"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/button_text_size"
+                android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

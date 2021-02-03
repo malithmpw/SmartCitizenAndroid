@@ -19,7 +19,7 @@
 
             <ImageView
                 android:id="@+id/imageView_issue_image"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="250dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -37,6 +37,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:paddingTop="8dp"
                 android:background="@drawable/bg_boarder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +48,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:paddingTop="8dp"
                 android:background="@drawable/bg_boarder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,8 +117,8 @@
         android:text="@string/report"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18"
-        android:textStyle="bold"
+        android:textSize="@dimen/button_text_size"
+        android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

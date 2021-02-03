@@ -43,8 +43,8 @@
         android:text="@string/login"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18"
-        android:textStyle="bold"
+        android:textSize="@dimen/button_text_size"
+        android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@+id/button_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -58,8 +58,8 @@
         android:text="@string/register"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18"
-        android:textStyle="bold"
+        android:textSize="@dimen/button_text_size"
+        android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@+id/language_spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

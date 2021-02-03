@@ -34,6 +34,9 @@ class SmartCitizenSpinnerAdapter(private val context: Context, private val list:
             tv.setTextColor(context.resources.getColor(R.color.colorAccent))
             tv.setTypeface(tv.typeface, Typeface.BOLD)
         }
+        if (position == 0) {
+            tv.textSize = 14f
+        }
         return tv
     }
 

@@ -275,8 +275,8 @@
                 android:text="@string/assigned_to_admin"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/button_text_size"
+                android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>
 
@@ -320,8 +320,8 @@
                 android:text="@string/mark_as_rejected"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/button_text_size"
+                android:textStyle="normal" />
 
             <Button
                 android:id="@+id/marked_as_resolved"
@@ -332,8 +332,8 @@
                 android:text="@string/mark_as_resolved"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/button_text_size"
+                android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>
 

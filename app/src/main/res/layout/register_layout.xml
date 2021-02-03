@@ -94,8 +94,8 @@
         android:text="@string/register"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18"
-        android:textStyle="bold"
+        android:textSize="@dimen/button_text_size"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_password_confirm" />
