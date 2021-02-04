@@ -11,8 +11,8 @@ android {
         applicationId "cmb.reporter.app.smartcitizenapp"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 19
-        versionName "1.0.19"
+        versionCode 20
+        versionName "1.0.20"
         multiDexEnabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -70,6 +70,13 @@ class SharePrefUtil(context: Context) {
         val userJson = getStringValue(USER)
         return Gson().fromJson(userJson, User::class.java)
     }
+    fun getDefaultUser(): User? {
+        val userJson = getStringValue(USER)
+        if (userJson.isNullOrEmpty()){
+            return null
+        }
+        return Gson().fromJson(userJson, User::class.java)
+    }
 }
 
 const val USER_PASSWORD = "user_password"
