@@ -15,7 +15,7 @@
     <string name="last_name">கடைசி பெயர்</string>
     <string name="confirm_password">கடவுச்சொல்லை உறுதிப்படுத்தவும்</string>
     <string name="landing_page_message_admin">நீங்கள் புகாரளித்த சிக்கல்களைக் காண்க.</string>
-    <string name="landing_page_message_user">நீங்கள் நகராட்சி மன்றத்துடன் எளிதாக இணைக்கலாம், மற்றும் சிக்கல்களைப் புகாரளிக்கவும்.</string>
+    <string name="landing_page_message_user">IDL ஸ்மார்ட் சிட்டிசன் கைபேசி செயலிற்கு உங்களை அன்புடன் வரவேற்கிறோம். நீங்கள் இப்பொழுது உங்களுடைய பிரதேசத்திலுள்ள பிரச்சனைகளுக்கு தீர்வை பெற்றுக்கொள்ள உங்களுடைய நகராட்சி மன்றம், பிரதேச சபை, பொது சேவை அதிகாரிகள் மற்றும் பிரதேச சபை மக்கள் பிரதிநிதிகளை இந்த செயலி மூலம் எளிதாக இணைப்பை ஏற்படுத்த முடியும்.</string>
     <string name="view_issues_reported">புகாரளிக்கப்பட்ட சிக்கல்கள்</string>
     <string name="issues_assigned_to_me">Issues assigned to me</string>
     <string name="my_reported_issues">எனது பிரச்சினைகள்</string>

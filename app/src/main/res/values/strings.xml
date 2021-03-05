@@ -15,7 +15,7 @@
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="landing_page_message_admin">You may view issues assigned to you, or view issues reported in the area.</string>
-    <string name="landing_page_message_user">Now you may connect with the Colombo Municipal Council better by easy and seamless reporting of concerns/issues of your area.</string>
+    <string name="landing_page_message_user">We are facilitating to engage with your local authority, public service officers, local council members and local political leaders through this app.</string>
     <string name="view_issues_reported">View issues reported</string>
     <string name="issues_assigned_to_me">Issues assigned to me</string>
     <string name="my_reported_issues">My reported issues</string>

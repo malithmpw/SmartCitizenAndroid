@@ -15,7 +15,7 @@
     <string name="last_name">වාසගම</string>
     <string name="confirm_password">මුරපදය තහවුරු කරන්න</string>
     <string name="landing_page_message_admin">ඔබ විසින් වාර්ථා කරන ලද ගැටළු හා ඔබ ප්‍රදේශයේ වාර්තා වන ලද ගැටළු බලන්න.</string>
-    <string name="landing_page_message_user">ඔබට දැන් ඉතා පහසුවෙන් ඔබගේ නගර සභාව / ප්‍රාදේශීය සභාව හා සම්බන්ධ වී, ඔබ ප්‍රදේශයේ ගැටළු ඉදිරිපත් කල හැක.</string>
+    <string name="landing_page_message_user">IDL ස්මාර්ට් සිටිසන් දුරකථන යෙදුම වෙත සාදරයෙන් පිළිගනිමු. ඔබට දැන් ඔබගේ ප්‍රදේශයේ ගැටළු වලට විසඳුම් සොයා ගැනීමට, ඔබගේ නගර සභාව, ප්‍රාදේශීය සභාව, පොදු සේවා නිලධාරීන් හා ප්‍රාදේශීය සභා මහජන නියෝජිතයන් සමග මෙම යෙදුම හරහා පහසුවෙන් සම්බන්ධ විය හැකිය.</string>
     <string name="view_issues_reported">වාර්ථාගත ගැටළු</string>
     <string name="issues_assigned_to_me">Issues assigned to me</string>
     <string name="my_reported_issues">මගේ ගැටළු</string>

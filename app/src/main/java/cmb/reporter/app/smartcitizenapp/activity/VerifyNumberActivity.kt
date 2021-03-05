@@ -32,8 +32,8 @@ class VerifyNumberActivity : BaseActivity() {
         progressbar = findViewById(R.id.progressBar)
         etPhone = findViewById(R.id.editText_userPhoneNumber)
         val otp = findViewById<EditText>(R.id.editText_otp)
-        val button = findViewById<Button>(R.id.button_verify_number)
-        button.visibility = View.INVISIBLE
+        val buttonVerify = findViewById<Button>(R.id.button_verify_number)
+        buttonVerify.visibility = View.INVISIBLE
 
         etPhone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -54,7 +54,7 @@ class VerifyNumberActivity : BaseActivity() {
                                     progressbar.visibility = View.GONE
                                     val isRegisteredNumber = response.body() ?: false
                                     if (!isRegisteredNumber) {
-                                        button.visibility = View.VISIBLE
+                                        buttonVerify.visibility = View.VISIBLE
                                     }else{
                                         Toast.makeText(
                                             this@VerifyNumberActivity,
@@ -83,10 +83,10 @@ class VerifyNumberActivity : BaseActivity() {
             }
         })
 
-        button.setOnClickListener {
+        buttonVerify.setOnClickListener {
             if (!isVerifyButtonClicked) {
                 isVerifyButtonClicked = true
-                button.text = resources.getString(R.string.verify_phone_number)
+                buttonVerify.text = resources.getString(R.string.verify_phone_number)
                 val phoneNo = etPhone?.text.toString()
                 when {
                     phoneNo.isNullOrEmpty() -> {
@@ -104,7 +104,7 @@ class VerifyNumberActivity : BaseActivity() {
                         ).show()
                     }
                     else -> {
-                        if (sharePrefUtil.is24hoursElapsed()) {
+                        if (!sharePrefUtil.is24hoursElapsed()) {
                             Toast.makeText(
                                 this@VerifyNumberActivity,
                                 getString(R.string.you_are_allowed_to_change_password_once_a_day),
@@ -127,7 +127,7 @@ class VerifyNumberActivity : BaseActivity() {
                     }
                 }
             } else {
-                button.text = resources.getString(R.string.send_otp)
+                buttonVerify.text = resources.getString(R.string.send_otp)
                 val otp = otp?.text.toString()
                 if (otp.isNotEmpty()) {
                     verifyVerificationCode(otp)

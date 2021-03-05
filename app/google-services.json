@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "613747337925-b58m836vuchf6v4l14ddm3ddjjngqd9v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cmb.reporter.app.smartcitizenapp",
+            "certificate_hash": "aacf862da370d8325d4bd884d09125e02bdfbfe1"
+          }
+        },
+        {
           "client_id": "613747337925-ct9gee1ngq7qn83dicj8p2bp705eahfj.apps.googleusercontent.com",
           "client_type": 3
         }
